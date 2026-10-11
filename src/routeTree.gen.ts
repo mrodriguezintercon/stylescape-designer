@@ -10,33 +10,185 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AyudaRouteImport } from './routes/ayuda'
+import { Route as BusquedaRouteImport } from './routes/busqueda'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as ModulosRouteImport } from './routes/modulos'
+import { Route as NotificacionesRouteImport } from './routes/notificaciones'
+import { Route as PendientesRouteImport } from './routes/pendientes'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PreferenciasRouteImport } from './routes/preferencias'
+import { Route as ModulosIndexRouteImport } from './routes/modulos.index'
+import { Route as ModulosModuleRouteImport } from './routes/modulos.$module'
+import { Route as ModulosModuleIndexRouteImport } from './routes/modulos.$module.index'
+import { Route as ModulosModuleSectionRouteImport } from './routes/modulos.$module.$section'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AyudaRoute = AyudaRouteImport.update({
+  id: '/ayuda',
+  path: '/ayuda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusquedaRoute = BusquedaRouteImport.update({
+  id: '/busqueda',
+  path: '/busqueda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModulosRoute = ModulosRouteImport.update({
+  id: '/modulos',
+  path: '/modulos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacionesRoute = NotificacionesRouteImport.update({
+  id: '/notificaciones',
+  path: '/notificaciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PendientesRoute = PendientesRouteImport.update({
+  id: '/pendientes',
+  path: '/pendientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreferenciasRoute = PreferenciasRouteImport.update({
+  id: '/preferencias',
+  path: '/preferencias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModulosIndexRoute = ModulosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ModulosRoute,
+} as any)
+const ModulosModuleRoute = ModulosModuleRouteImport.update({
+  id: '/$module',
+  path: '/$module',
+  getParentRoute: () => ModulosRoute,
+} as any)
+const ModulosModuleIndexRoute = ModulosModuleIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ModulosModuleRoute,
+} as any)
+const ModulosModuleSectionRoute = ModulosModuleSectionRouteImport.update({
+  id: '/$section',
+  path: '/$section',
+  getParentRoute: () => ModulosModuleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ayuda': typeof AyudaRoute
+  '/busqueda': typeof BusquedaRoute
+  '/favoritos': typeof FavoritosRoute
+  '/modulos': typeof ModulosRouteWithChildren
+  '/notificaciones': typeof NotificacionesRoute
+  '/pendientes': typeof PendientesRoute
+  '/perfil': typeof PerfilRoute
+  '/preferencias': typeof PreferenciasRoute
+  '/modulos/$module': typeof ModulosModuleRouteWithChildren
+  '/modulos/': typeof ModulosIndexRoute
+  '/modulos/$module/$section': typeof ModulosModuleSectionRoute
+  '/modulos/$module/': typeof ModulosModuleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ayuda': typeof AyudaRoute
+  '/busqueda': typeof BusquedaRoute
+  '/favoritos': typeof FavoritosRoute
+  '/notificaciones': typeof NotificacionesRoute
+  '/pendientes': typeof PendientesRoute
+  '/perfil': typeof PerfilRoute
+  '/preferencias': typeof PreferenciasRoute
+  '/modulos': typeof ModulosIndexRoute
+  '/modulos/$module/$section': typeof ModulosModuleSectionRoute
+  '/modulos/$module': typeof ModulosModuleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ayuda': typeof AyudaRoute
+  '/busqueda': typeof BusquedaRoute
+  '/favoritos': typeof FavoritosRoute
+  '/modulos': typeof ModulosRouteWithChildren
+  '/notificaciones': typeof NotificacionesRoute
+  '/pendientes': typeof PendientesRoute
+  '/perfil': typeof PerfilRoute
+  '/preferencias': typeof PreferenciasRoute
+  '/modulos/$module': typeof ModulosModuleRouteWithChildren
+  '/modulos/': typeof ModulosIndexRoute
+  '/modulos/$module/$section': typeof ModulosModuleSectionRoute
+  '/modulos/$module/': typeof ModulosModuleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ayuda'
+    | '/busqueda'
+    | '/favoritos'
+    | '/modulos'
+    | '/notificaciones'
+    | '/pendientes'
+    | '/perfil'
+    | '/preferencias'
+    | '/modulos/$module'
+    | '/modulos/'
+    | '/modulos/$module/$section'
+    | '/modulos/$module/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ayuda'
+    | '/busqueda'
+    | '/favoritos'
+    | '/notificaciones'
+    | '/pendientes'
+    | '/perfil'
+    | '/preferencias'
+    | '/modulos'
+    | '/modulos/$module/$section'
+    | '/modulos/$module'
+  id:
+    | '__root__'
+    | '/'
+    | '/ayuda'
+    | '/busqueda'
+    | '/favoritos'
+    | '/modulos'
+    | '/notificaciones'
+    | '/pendientes'
+    | '/perfil'
+    | '/preferencias'
+    | '/modulos/$module'
+    | '/modulos/'
+    | '/modulos/$module/$section'
+    | '/modulos/$module/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AyudaRoute: typeof AyudaRoute
+  BusquedaRoute: typeof BusquedaRoute
+  FavoritosRoute: typeof FavoritosRoute
+  ModulosRoute: typeof ModulosRouteWithChildren
+  NotificacionesRoute: typeof NotificacionesRoute
+  PendientesRoute: typeof PendientesRoute
+  PerfilRoute: typeof PerfilRoute
+  PreferenciasRoute: typeof PreferenciasRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +200,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ayuda': {
+      id: '/ayuda'
+      path: '/ayuda'
+      fullPath: '/ayuda'
+      preLoaderRoute: typeof AyudaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/busqueda': {
+      id: '/busqueda'
+      path: '/busqueda'
+      fullPath: '/busqueda'
+      preLoaderRoute: typeof BusquedaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modulos': {
+      id: '/modulos'
+      path: '/modulos'
+      fullPath: '/modulos'
+      preLoaderRoute: typeof ModulosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificaciones': {
+      id: '/notificaciones'
+      path: '/notificaciones'
+      fullPath: '/notificaciones'
+      preLoaderRoute: typeof NotificacionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pendientes': {
+      id: '/pendientes'
+      path: '/pendientes'
+      fullPath: '/pendientes'
+      preLoaderRoute: typeof PendientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferencias': {
+      id: '/preferencias'
+      path: '/preferencias'
+      fullPath: '/preferencias'
+      preLoaderRoute: typeof PreferenciasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modulos/': {
+      id: '/modulos/'
+      path: '/'
+      fullPath: '/modulos/'
+      preLoaderRoute: typeof ModulosIndexRouteImport
+      parentRoute: typeof ModulosRoute
+    }
+    '/modulos/$module': {
+      id: '/modulos/$module'
+      path: '/$module'
+      fullPath: '/modulos/$module'
+      preLoaderRoute: typeof ModulosModuleRouteImport
+      parentRoute: typeof ModulosRoute
+    }
+    '/modulos/$module/': {
+      id: '/modulos/$module/'
+      path: '/'
+      fullPath: '/modulos/$module/'
+      preLoaderRoute: typeof ModulosModuleIndexRouteImport
+      parentRoute: typeof ModulosModuleRoute
+    }
+    '/modulos/$module/$section': {
+      id: '/modulos/$module/$section'
+      path: '/$section'
+      fullPath: '/modulos/$module/$section'
+      preLoaderRoute: typeof ModulosModuleSectionRouteImport
+      parentRoute: typeof ModulosModuleRoute
+    }
   }
 }
 
+interface ModulosModuleRouteChildren {
+  ModulosModuleSectionRoute: typeof ModulosModuleSectionRoute
+  ModulosModuleIndexRoute: typeof ModulosModuleIndexRoute
+}
+
+const ModulosModuleRouteChildren: ModulosModuleRouteChildren = {
+  ModulosModuleSectionRoute: ModulosModuleSectionRoute,
+  ModulosModuleIndexRoute: ModulosModuleIndexRoute,
+}
+
+const ModulosModuleRouteWithChildren = ModulosModuleRoute._addFileChildren(
+  ModulosModuleRouteChildren,
+)
+
+interface ModulosRouteChildren {
+  ModulosModuleRoute: typeof ModulosModuleRouteWithChildren
+  ModulosIndexRoute: typeof ModulosIndexRoute
+}
+
+const ModulosRouteChildren: ModulosRouteChildren = {
+  ModulosModuleRoute: ModulosModuleRouteWithChildren,
+  ModulosIndexRoute: ModulosIndexRoute,
+}
+
+const ModulosRouteWithChildren =
+  ModulosRoute._addFileChildren(ModulosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AyudaRoute: AyudaRoute,
+  BusquedaRoute: BusquedaRoute,
+  FavoritosRoute: FavoritosRoute,
+  ModulosRoute: ModulosRouteWithChildren,
+  NotificacionesRoute: NotificacionesRoute,
+  PendientesRoute: PendientesRoute,
+  PerfilRoute: PerfilRoute,
+  PreferenciasRoute: PreferenciasRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
