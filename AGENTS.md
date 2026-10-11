@@ -8,3 +8,10 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Intercore architecture
+- Keep mock business state in the shared AppShell context, never external services or browser storage; all visual variants must share behavior and session data.
+- Use TanStack file routes for content screens and nested module routes; URL search parameters preserve the chosen visual variant across navigation.
+- Keep reusable shell/navigation in shell.tsx, operational widgets in widgets.tsx and page compositions in views.tsx; variants alter layout through centralized CSS without duplicating navigation logic.
+- Use global semantic CSS tokens for identity and dimensions; official branding can then replace provisional values without changing feature code.
+- Hide prototype-only controls using the production environment flag; URL-selected layouts still render without the prototype toolbar.
