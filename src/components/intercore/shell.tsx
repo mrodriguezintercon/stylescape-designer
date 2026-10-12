@@ -16,6 +16,11 @@ import {
   ChevronRight,
   ArrowUpRight,
   PanelLeft,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Plus,
+  FileText,
+  FolderPen,
   HelpCircle,
   LogOut,
   Settings,
@@ -98,6 +103,8 @@ const WorkspaceContext = createContext<{
   signOut: () => void;
   query: string;
   setQuery: (q: string) => void;
+  sidebarCollapsed: boolean;
+  toggleSidebar: () => void;
 } | null>(null);
 export function useWorkspace() {
   const ctx = useContext(WorkspaceContext);
@@ -115,6 +122,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState(["cotizador", "price-model"]);
   const [query, setQuery] = useState("");
   const [signedOut, setSignedOut] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const search = { style, state };
   const ctx = {
     quotes,
@@ -133,6 +141,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     favorites,
     query,
     setQuery,
+    sidebarCollapsed,
+    toggleSidebar: () => setSidebarCollapsed((value) => !value),
     setStatus: (id: number, status: TaskStatus) =>
       setTasks((v) => v.map((t) => (t.id === id ? { ...t, status } : t))),
     markRead: (id?: number) =>
@@ -151,7 +161,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
   return (
     <WorkspaceContext.Provider value={ctx}>
-      <div className={cn("workspace", `style-${style}`)}>
+      <div className={cn("workspace", `style-${style}`, sidebarCollapsed && "sidebar-collapsed")}>
         <a href="#page-content" className="skip-link">
           Ir al contenido
         </a>
@@ -166,7 +176,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         ) : (
           <>
-            <aside className="desktop-sidebar">
+            <aside id="desktop-navigation" className="desktop-sidebar">
               <Sidebar />
             </aside>
             <div className="workspace-body">
@@ -316,6 +326,7 @@ export function ModuleLink({
       params={{ module: id, section }}
       search={search}
       className={className}
+      title={section}
       onClick={onClick}
     >
       {children}
@@ -327,6 +338,7 @@ export function ModuleLink({
       search={search}
       className={className}
       title={modules.find((m) => m.id === id)?.name}
+      aria-label={modules.find((m) => m.id === id)?.name}
       onClick={onClick}
     >
       {children}
@@ -340,6 +352,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="sidebar-inner">
       <Wordmark />
+      <span className="compact-wordmark" aria-label="Intercon · Intercore" title="Intercon · Intercore">IC<span>.</span></span>
       <div className="workspace-select">
         <div className="workspace-avatar">IC</div>
         <div className="nav-text">
@@ -393,24 +406,23 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <div className="context-nav" aria-label="Cotizador Light">
             <div className="context-nav-label">COTIZADOR LIGHT</div>
             {[
-              { name: "Inicio", section: undefined },
-              { name: "Nueva cotización", section: "nueva" },
-              { name: "Mis cotizaciones", section: "cotizaciones" },
-              { name: "Borradores", section: "borradores" },
-              { name: "Configuración", section: "configuracion" },
+              { name: "Inicio", section: undefined, icon: Home },
+              { name: "Nueva cotización", section: "nueva", icon: Plus },
+              { name: "Mis cotizaciones", section: "cotizaciones", icon: FileText },
+              { name: "Borradores", section: "borradores", icon: FolderPen },
+              { name: "Configuración", section: "configuracion", icon: Settings },
             ].map((s) => (
+              <Button asChild variant="ghost" key={s.name} className={cn("context-link", path === `/modulos/cotizador${s.section ? "/" + s.section : ""}` && "active")} title={s.name} aria-label={s.name}>
               <ModuleLink
                 id="cotizador"
                 section={s.section}
                 key={s.name}
                 onClick={onNavigate}
-                className={cn(
-                  "context-link",
-                  path === `/modulos/cotizador${s.section ? "/" + s.section : ""}` && "active",
-                )}
               >
-                {s.name}
+                <s.icon size={16} className="context-icon" />
+                <span className="context-text">{s.name}</span>
               </ModuleLink>
+              </Button>
             ))}
           </div>
         )}
@@ -482,7 +494,7 @@ export function UserMenu() {
   );
 }
 export function Header() {
-  const { search, query, setQuery, notifications, tasks } = useWorkspace();
+  const { search, query, setQuery, notifications, tasks, sidebarCollapsed, toggleSidebar } = useWorkspace();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(false);
   return (
@@ -505,8 +517,13 @@ export function Header() {
             <Sidebar onNavigate={() => setMenu(false)} />
           </SheetContent>
         </Sheet>
+        <Button variant="ghost" size="icon" className="sidebar-toggle" onClick={toggleSidebar}
+          aria-label={sidebarCollapsed ? "Expandir navegación" : "Comprimir navegación"}
+          title={sidebarCollapsed ? "Expandir navegación" : "Comprimir navegación"}
+          aria-expanded={!sidebarCollapsed} aria-controls="desktop-navigation">
+          {sidebarCollapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}
+        </Button>
         <span className="header-workspace">
-          <PanelLeft size={18} />
           <span>Mi espacio de trabajo</span>
         </span>
         <div className="portal-wordmark">
