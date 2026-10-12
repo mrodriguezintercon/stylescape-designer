@@ -9,7 +9,7 @@ Usa el selector superior en desarrollo o agrega a cualquier URL:
 - `?style=command` — Command Center: navegación compacta y foco en trabajo pendiente.
 - `?style=portal` — Modular Portal: catálogo visual y descubrimiento.
 
-Los enlaces conservan la variante. El selector y el control de estados se ocultan con `import.meta.env.PROD` (equivalente a la compilación de producción). La variante puede seleccionarse por URL también en producción.
+Los enlaces conservan la variante. El selector y el control de estados se muestran siempre, también en la vista previa publicada (es un prototipo sin entorno real de producción). La variante también puede seleccionarse por URL.
 
 ## Pantallas y simulación
 

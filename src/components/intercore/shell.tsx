@@ -51,7 +51,6 @@ import {
   styles,
   stateOptions,
   parseStyle,
-  prototypeVisible,
   type VisualStyle,
   type TaskStatus,
 } from "@/data/intercore";
@@ -155,7 +154,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <a href="#page-content" className="skip-link">
           Ir al contenido
         </a>
-        {prototypeVisible(import.meta.env.PROD) && <StyleSwitcher />}
+        <StyleSwitcher />
         {signedOut ? (
           <div className="signed-out">
             <Wordmark />

@@ -7,9 +7,6 @@ export const styles = [
 export function parseStyle(value: unknown): VisualStyle {
   return value === "command" || value === "portal" ? value : "corporate";
 }
-export function prototypeVisible(production: boolean) {
-  return !production;
-}
 export const modules = [
   {
     id: "cotizador",
