@@ -4,6 +4,6 @@
 - [x] Catálogo, permisos mock y navegación de Cotizador Light.
 - [x] Estados de prueba y adaptación a pantallas pequeñas.
 - [x] Pruebas, README y recomendaciones.
-- [ ] Consolidar Corporate Workspace y simplificar el inicio.
-- [ ] Limitar variantes y selector a desarrollo; actualizar documentación y pruebas.
-- [ ] Verificar navegación, estados y drawer mobile.
+- [x] Consolidar Corporate Workspace y simplificar el inicio.
+- [x] Limitar variantes y selector a desarrollo; actualizar documentación y pruebas.
+- [x] Verificar navegación, estados y drawer mobile.
