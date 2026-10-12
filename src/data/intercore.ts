@@ -4,7 +4,11 @@ export const styles = [
   { id: "command", name: "Command Center" },
   { id: "portal", name: "Modular Portal" },
 ] as const;
-export function parseStyle(value: unknown): VisualStyle {
+export function prototypeVisible(isDevelopment: boolean): boolean {
+  return isDevelopment;
+}
+export function parseStyle(value: unknown, isDevelopment = import.meta.env.DEV): VisualStyle {
+  if (!isDevelopment) return "corporate";
   return value === "command" || value === "portal" ? value : "corporate";
 }
 export const modules = [

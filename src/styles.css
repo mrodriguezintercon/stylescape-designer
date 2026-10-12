@@ -187,6 +187,10 @@
   --space-section: 30px;
   --sidebar-width: 244px;
   --header-height: 72px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --prototype-height: 48px;
 }
 @theme inline {
   --color-success: var(--success);
@@ -249,7 +253,7 @@ button {
 .workspace {
   min-height: 100vh;
   display: flex;
-  padding-top: 48px;
+  padding-top: var(--prototype-height);
 }
 .prototype-bar {
   position: fixed;
@@ -317,7 +321,7 @@ button {
 }
 .desktop-sidebar {
   position: fixed;
-  top: 48px;
+  top: var(--prototype-height);
   bottom: 0;
   left: 0;
   width: var(--sidebar-width);
@@ -435,7 +439,7 @@ button {
   border-radius: 0 2px 2px 0;
 }
 .nav-item.is-active > svg {
-  color: oklch(0.76 0.12 255);
+  color: var(--institutional-fg);
 }
 .nav-badge {
   margin-left: auto;
@@ -2069,9 +2073,6 @@ button {
   }
 }
 @media (max-width: 1100px) {
-  :root {
-    --sidebar-width: 220px;
-  }
   .global-header {
     padding: 0 22px;
     gap: 15px;
@@ -2297,7 +2298,8 @@ button {
 }
 @media (max-width: 640px) {
   .workspace {
-    padding-top: 86px;
+    --prototype-height: 86px;
+    padding-top: var(--prototype-height);
   }
   .prototype-bar {
     height: 86px;
@@ -2832,4 +2834,55 @@ button {
   display: inline;
   vertical-align: middle;
   margin-left: 6px;
+}
+
+/* Primary workspace: operational content, restrained framing, stable dimensions. */
+.style-corporate .workspace-actions {
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-lg);
+}
+.style-corporate .home-columns {
+  margin-top: 0;
+  margin-bottom: var(--space-section);
+}
+.style-corporate .task-list,
+.style-corporate .favorite-links,
+.style-corporate .notifications-list {
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.style-corporate .module-card {
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+.style-corporate .page-heading h1 { font-weight: 700; }
+.style-corporate .section-heading h2 { font-size: 16px; font-weight: 700; }
+.style-corporate .compact-task-list .task-title { font-size: 12px; }
+.style-corporate .module-card h3 { font-size: 14px; font-weight: 700; }
+.style-corporate .module-card p { font-size: 12px; }
+.style-corporate .quick-actions > a { min-height: 40px; font-size: 12px; }
+.context-nav-label {
+  color: var(--institutional-muted);
+  font-size: 10px;
+  padding: var(--space-md) 0 var(--space-sm);
+  border-top: 1px solid var(--institutional-border);
+  margin-top: var(--space-sm);
+}
+.style-corporate .global-header { gap: var(--space-md); }
+.style-corporate .header-search { flex: 1; max-width: 480px; min-width: 120px; }
+@media (max-width: 1100px) and (min-width: 901px) {
+  .style-corporate .header-workspace > span { display: none; }
+  .style-corporate .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .style-corporate .global-header { gap: 6px; }
+  .style-corporate .header-search { min-width: 0; }
+  .style-corporate .header-tools .header-tool:first-child { display: inline-flex; }
+  .style-corporate .header-tools-divider { display: none; }
+  .style-corporate .home-columns { grid-template-columns: 1fr; }
+  .style-corporate .quick-actions > a { min-height: 44px; }
 }

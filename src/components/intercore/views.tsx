@@ -41,18 +41,10 @@ import {
   RecentActivity,
   StatusBadge,
 } from "./widgets";
-import officeImage from "@/assets/intercon-office.jpg";
 export function HomeView() {
-  const { style } = useWorkspace();
   return (
     <StateGate>
-      {style === "command" ? (
-        <CommandHome />
-      ) : style === "portal" ? (
-        <PortalHome />
-      ) : (
-        <CorporateHome />
-      )}
+      <CorporateHome />
     </StateGate>
   );
 }
@@ -60,7 +52,7 @@ function Greeting() {
   return (
     <PageHeading
       title="Buen día, Alejandro"
-      description="Todo lo que necesitas para avanzar, en un solo lugar."
+      description="Intercore · Intercon México"
     >
       <span className="date-label">
         <CalendarDays size={15} />
@@ -122,39 +114,20 @@ function Metrics() {
 }
 
 function CorporateHome() {
-  const { search } = useWorkspace();
+  const { tasks, state } = useWorkspace();
+  const pendingCount = state === "no-tasks" ? 0 : tasks.filter((t) => t.status !== "Completado").length;
   return (
     <>
       <Greeting />
-      <div className="home-intro">
-        <div className="home-intro-copy">
-          <span className="eyebrow">TU ESPACIO. TU EQUIPO. TU TRABAJO.</span>
-          <h2>Un buen día empieza con claridad.</h2>
-          <p>Conecta con tus herramientas y enfócate en lo que importa.</p>
-          <Button variant="outline" asChild>
-            <Link to="/modulos" search={search}>
-              Explorar mis módulos <ArrowRight />
-            </Link>
-          </Button>
-        </div>
-        <img
-          src={officeImage}
-          alt="Arquitectura corporativa contemporánea, imagen ilustrativa"
-          width={1280}
-          height={720}
-        />
-        <span className="intro-image-label">INTERCON · CONSTRUIMOS CONEXIONES</span>
-      </div>
-      <Metrics />
-      <div className="section-block">
+      <section className="section-block workspace-actions">
         <SectionHeading title="Acciones rápidas" />
         <QuickActions />
-      </div>
+      </section>
       <div className="home-columns">
         <section className="priority-section">
           <SectionHeading
             title="Tus pendientes prioritarios"
-            count={useWorkspace().tasks.filter((t) => t.status !== "Completado").length}
+            count={pendingCount}
             to="/pendientes"
           />
           <PendingTaskList compact />
@@ -165,8 +138,8 @@ function CorporateHome() {
         </section>
       </div>
       <section className="section-block">
-        <SectionHeading title="Tus módulos" to="/modulos" />
-        <ModuleGrid limit={3} />
+        <SectionHeading title="Módulos autorizados" to="/modulos" />
+        <ModuleGrid />
       </section>
       <div className="home-columns bottom-columns">
         <section>
@@ -418,8 +391,8 @@ export function StandardView({ view }: { view: string }) {
               ))}
             </dl>
             <div className="profile-preferences">
-              <SectionHeading title="Preferencias visuales" />
-              <div className="preference-options">
+              <SectionHeading title="Preferencias" />
+              {import.meta.env.DEV && <div className="preference-options">
                 {styles.map((s) => (
                   <Button
                     key={s.id}
@@ -430,7 +403,7 @@ export function StandardView({ view }: { view: string }) {
                     {s.name}
                   </Button>
                 ))}
-              </div>
+              </div>}
               <p className="text-muted-foreground text-sm mt-3">
                 Español (México) · Zona horaria: Ciudad de México
               </p>

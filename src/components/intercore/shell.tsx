@@ -51,6 +51,7 @@ import {
   styles,
   stateOptions,
   parseStyle,
+  prototypeVisible,
   type VisualStyle,
   type TaskStatus,
 } from "@/data/intercore";
@@ -154,7 +155,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <a href="#page-content" className="skip-link">
           Ir al contenido
         </a>
-        <StyleSwitcher />
+        {prototypeVisible(import.meta.env.DEV) && <StyleSwitcher />}
         {signedOut ? (
           <div className="signed-out">
             <Wordmark />
@@ -390,6 +391,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             })}
         {inQuote && (
           <div className="context-nav" aria-label="Cotizador Light">
+            <div className="context-nav-label">COTIZADOR LIGHT</div>
             {[
               { name: "Inicio", section: undefined },
               { name: "Nueva cotización", section: "nueva" },
