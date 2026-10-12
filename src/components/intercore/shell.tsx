@@ -49,9 +49,6 @@ import {
   initialQuotes,
   modules,
   styles,
-  stateOptions,
-  parseStyle,
-  prototypeVisible,
   type VisualStyle,
   type TaskStatus,
 } from "@/data/intercore";
