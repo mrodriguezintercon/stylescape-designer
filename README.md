@@ -2,14 +2,18 @@
 
 Prototipo navegable, exclusivamente con datos ficticios en memoria. No hay backend, autenticación real, polling ni almacenamiento persistente. Recargar reinicia los cambios; navegar entre pantallas conserva tareas, notificaciones, favoritos y cotizaciones.
 
-## Comparar estilos
+## Dirección principal
+
+Corporate Workspace es la experiencia principal: sidebar institucional de ancho fijo en desktop, drawer en mobile, header global y navegación contextual separada. El inicio prioriza acciones rápidas, pendientes y módulos autorizados; conserva favoritos, filtros, actividad y notificaciones sin el banner decorativo.
+
+## Comparar estilos en desarrollo
 
 Usa el selector superior en desarrollo o agrega a cualquier URL:
 - `?style=corporate` — Corporate Workspace: estructura institucional y navegación jerárquica.
 - `?style=command` — Command Center: navegación compacta y foco en trabajo pendiente.
 - `?style=portal` — Modular Portal: catálogo visual y descubrimiento.
 
-Los enlaces conservan la variante. El selector y el control de estados se muestran siempre, también en la vista previa publicada (es un prototipo sin entorno real de producción). La variante también puede seleccionarse por URL.
+Los enlaces conservan la variante únicamente en desarrollo. El selector y el control de estados solo aparecen con `import.meta.env.DEV`. Fuera de desarrollo, incluida la vista previa de producción, siempre se usa Corporate Workspace aunque la URL contenga `style=command` o `style=portal`. Los estilos experimentales comparten el mismo inicio operativo y no determinan la experiencia principal.
 
 ## Pantallas y simulación
 
@@ -29,11 +33,11 @@ El selector Estado simula carga, permisos vacíos, pendientes vacíos, notificac
 - Validar densidad y prioridades con usuarios operativos de cada área.
 - Definir permisos reales, fuente de datos, autenticación, plazos de tareas y reglas del cotizador en una etapa posterior.
 - Confirmar textos, estructura de cada módulo y comportamiento de notificaciones.
-- La fotografía corporativa es generada e ilustrativa, no una sede real. Nombres, clientes, correo, importes y fecha son datos mock.
+- Nombres, clientes, correo, importes y fecha son datos mock.
 
 ## Recomendaciones finales
 
 1. **Corporate Workspace:** conservar la separación entre navegación global y contextual, los breadcrumbs y el header estable como estructura base para uso diario.
 2. **Command Center:** conservar búsqueda prominente, filtros y acciones de estado en pendientes; usar su mayor densidad para roles operativos.
 3. **Modular Portal:** conservar catálogo descriptivo, disponibilidad y favoritos para descubrimiento y crecimiento del ecosistema.
-4. **Síntesis recomendada:** estructura A, productividad B y catálogo/favoritos C. Validar con tareas reales antes de elegir una variante definitiva.
+4. **Dirección adoptada:** Corporate Workspace con funciones de productividad y descubrimiento integradas. Los layouts alternativos quedan únicamente como referencias de desarrollo.

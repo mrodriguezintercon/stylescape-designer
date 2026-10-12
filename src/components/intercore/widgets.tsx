@@ -419,6 +419,8 @@ export function StateGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 export function QuickActions() {
+  const { state } = useWorkspace();
+  if (state === "no-modules") return null;
   return (
     <div className="quick-actions">
       <Button asChild>

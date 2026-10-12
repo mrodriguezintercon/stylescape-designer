@@ -14,4 +14,5 @@
 - Use TanStack file routes for content screens and nested module routes; URL search parameters preserve the chosen visual variant across navigation.
 - Keep reusable shell/navigation in shell.tsx, operational widgets in widgets.tsx and page compositions in views.tsx; variants alter layout through centralized CSS without duplicating navigation logic.
 - Use global semantic CSS tokens for identity and dimensions; official branding can then replace provisional values without changing feature code.
-- Always render the prototype toolbar (StyleSwitcher); this prototype has no real production environment and the preview serves production builds, so the bar must never be hidden. URL-selected layouts still render without relying on it.
+- Gate the prototype toolbar and legacy style resolution with import.meta.env.DEV; outside development normalize every style to corporate so URL parameters cannot restore experimental layouts.
+- Use one operational home composition for all development styles; functional improvements belong in that shared composition, not alternative home implementations.

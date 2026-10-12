@@ -21,8 +21,6 @@ import {
   HelpCircle,
   CalendarDays,
   CheckCircle2,
-  Command,
-  TriangleAlert,
   SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,18 +39,10 @@ import {
   RecentActivity,
   StatusBadge,
 } from "./widgets";
-import officeImage from "@/assets/intercon-office.jpg";
 export function HomeView() {
-  const { style } = useWorkspace();
   return (
     <StateGate>
-      {style === "command" ? (
-        <CommandHome />
-      ) : style === "portal" ? (
-        <PortalHome />
-      ) : (
-        <CorporateHome />
-      )}
+      <CorporateHome />
     </StateGate>
   );
 }
@@ -60,7 +50,7 @@ function Greeting() {
   return (
     <PageHeading
       title="Buen día, Alejandro"
-      description="Todo lo que necesitas para avanzar, en un solo lugar."
+      description="Intercore · Intercon México"
     >
       <span className="date-label">
         <CalendarDays size={15} />
@@ -69,92 +59,21 @@ function Greeting() {
     </PageHeading>
   );
 }
-function Metrics() {
-  const { tasks, notifications, state, search } = useWorkspace();
-  const pending = state === "no-tasks" ? 0 : tasks.filter((t) => t.status !== "Completado").length;
-  return (
-    <div className="metrics-grid">
-      {[
-        {
-          title: "Pendientes por atender",
-          value: String(pending).padStart(2, "0"),
-          sub: pending ? "2 requieren tu atención hoy" : "Todo al día",
-          icon: CheckSquare,
-          tone: "amber",
-          to: "/pendientes" as const,
-        },
-        {
-          title: "Notificaciones nuevas",
-          value: String(
-            state === "no-notifications" ? 0 : notifications.filter((n) => !n.read).length,
-          ).padStart(2, "0"),
-          sub: "Mantente al tanto de tu trabajo",
-          icon: Bell,
-          tone: "brand",
-          to: "/notificaciones" as const,
-        },
-        {
-          title: "Módulos disponibles",
-          value: state === "no-modules" ? "00" : "05",
-          sub: "Herramientas para tu día a día",
-          icon: Layers,
-          tone: "teal",
-          to: "/modulos" as const,
-        },
-      ].map((m) => (
-        <Link key={m.title} to={m.to} search={search} className="metric-item">
-          <div className="metric-top">
-            <span>{m.title}</span>
-            <m.icon className={cn("metric-icon", `text-tone-${m.tone}`)} size={18} />
-          </div>
-          <strong>
-            {m.value}
-            <ArrowUpRight size={17} />
-          </strong>
-          <small className={m.tone === "amber" && pending ? "text-warning" : ""}>
-            {m.tone === "amber" && pending ? <span className="priority-dot" /> : null}
-            {m.sub}
-          </small>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
 function CorporateHome() {
-  const { search } = useWorkspace();
+  const { tasks, state } = useWorkspace();
+  const pendingCount = state === "no-tasks" ? 0 : tasks.filter((t) => t.status !== "Completado").length;
   return (
     <>
       <Greeting />
-      <div className="home-intro">
-        <div className="home-intro-copy">
-          <span className="eyebrow">TU ESPACIO. TU EQUIPO. TU TRABAJO.</span>
-          <h2>Un buen día empieza con claridad.</h2>
-          <p>Conecta con tus herramientas y enfócate en lo que importa.</p>
-          <Button variant="outline" asChild>
-            <Link to="/modulos" search={search}>
-              Explorar mis módulos <ArrowRight />
-            </Link>
-          </Button>
-        </div>
-        <img
-          src={officeImage}
-          alt="Arquitectura corporativa contemporánea, imagen ilustrativa"
-          width={1280}
-          height={720}
-        />
-        <span className="intro-image-label">INTERCON · CONSTRUIMOS CONEXIONES</span>
-      </div>
-      <Metrics />
-      <div className="section-block">
+      <section className="section-block workspace-actions">
         <SectionHeading title="Acciones rápidas" />
         <QuickActions />
-      </div>
+      </section>
       <div className="home-columns">
         <section className="priority-section">
           <SectionHeading
             title="Tus pendientes prioritarios"
-            count={useWorkspace().tasks.filter((t) => t.status !== "Completado").length}
+            count={pendingCount}
             to="/pendientes"
           />
           <PendingTaskList compact />
@@ -165,8 +84,8 @@ function CorporateHome() {
         </section>
       </div>
       <section className="section-block">
-        <SectionHeading title="Tus módulos" to="/modulos" />
-        <ModuleGrid limit={3} />
+        <SectionHeading title="Módulos autorizados" to="/modulos" />
+        <ModuleGrid />
       </section>
       <div className="home-columns bottom-columns">
         <section>
@@ -212,144 +131,6 @@ function FavoriteLinks() {
       title="Tu próximo acceso directo"
       description="Agrega módulos a favoritos para encontrarlos aquí."
     />
-  );
-}
-function CommandHome() {
-  const { tasks, search } = useWorkspace();
-  return (
-    <>
-      <PageHeading
-        eyebrow="CENTRO DE OPERACIONES"
-        title="Tu día, bajo control."
-        description="Alejandro, esto es lo que requiere tu atención."
-      >
-        <span className="live-label">
-          <span className="status-dot" />
-          Operación activa
-        </span>
-        <Button asChild>
-          <ModuleLink id="cotizador" section="nueva">
-            <Plus />
-            Nueva cotización
-          </ModuleLink>
-        </Button>
-      </PageHeading>
-      <CommandSearch />
-      <Metrics />
-      <div className="command-layout">
-        <section>
-          <div className="command-priority-heading">
-            <span>
-              <TriangleAlert size={17} />
-              ATENCIÓN PRIORITARIA
-            </span>
-            <span>11 OCT 2026</span>
-          </div>
-          <SectionHeading
-            title="Cola de pendientes"
-            count={tasks.filter((t) => t.due.startsWith("Hoy") && t.status !== "Completado").length}
-            to="/pendientes"
-          />
-          <PendingTaskList />
-          <section className="command-activity">
-            <SectionHeading title="Flujo de actividad" />
-            <RecentActivity />
-          </section>
-        </section>
-        <aside className="command-rail">
-          <SectionHeading title="Acciones" />
-          <QuickActions />
-          <div className="section-block">
-            <SectionHeading title="Alertas y novedades" to="/notificaciones" />
-            <NotificationCenter compact />
-          </div>
-          <div className="section-block">
-            <SectionHeading title="Accesos frecuentes" />
-            <FavoriteLinks />
-          </div>
-        </aside>
-      </div>
-      <section className="section-block">
-        <SectionHeading title="Herramientas de operación" to="/modulos" />
-        <ModuleGrid limit={3} />
-      </section>
-    </>
-  );
-}
-function CommandSearch() {
-  const { query, setQuery, search } = useWorkspace();
-  return (
-    <form
-      className="command-search"
-      action="/busqueda"
-      onSubmit={(e) => {
-        e.preventDefault();
-        document.getElementById("command-search-go")?.click();
-      }}
-    >
-      <Search size={22} />
-      <input
-        aria-label="Buscar operaciones"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="¿Qué necesitas encontrar? Cotizaciones, módulos, pendientes…"
-      />
-      <Button asChild variant="ghost">
-        <Link id="command-search-go" to="/busqueda" search={search}>
-          Buscar <ArrowRight />
-        </Link>
-      </Button>
-    </form>
-  );
-}
-function PortalHome() {
-  const { search } = useWorkspace();
-  return (
-    <>
-      <div className="portal-welcome">
-        <div>
-          <span className="eyebrow">BIENVENIDO A INTERCORE</span>
-          <h1>Tu trabajo. Un mundo de posibilidades.</h1>
-          <p>Hola, Alejandro. Encuentra el espacio para tu siguiente gran idea.</p>
-        </div>
-        <span className="portal-date">
-          DOMINGO
-          <br />
-          <strong>11</strong> OCTUBRE
-        </span>
-      </div>
-      <section className="portal-favorites">
-        <SectionHeading title="Continúa donde te quedaste" to="/favoritos" />
-        <FavoriteLinks />
-      </section>
-      <div className="portal-catalog-heading">
-        <div>
-          <span className="eyebrow">EXPLORA TU ESPACIO DE TRABAJO</span>
-          <h2>Un módulo para cada necesidad.</h2>
-        </div>
-        <Button variant="outline" asChild>
-          <Link to="/modulos" search={search}>
-            <Layers />
-            Todos los módulos
-          </Link>
-        </Button>
-      </div>
-      <ModuleGrid />
-      <div className="home-columns bottom-columns">
-        <section>
-          <SectionHeading title="Lo que sigue" to="/pendientes" />
-          <PendingTaskList compact />
-        </section>
-        <section>
-          <SectionHeading title="En tu radar" to="/notificaciones" />
-          <NotificationCenter compact />
-        </section>
-      </div>
-      <section className="section-block">
-        <SectionHeading title="Actividad reciente" />
-        <RecentActivity />
-      </section>
-    </>
   );
 }
 export function ModuleGrid({
@@ -418,8 +199,8 @@ export function StandardView({ view }: { view: string }) {
               ))}
             </dl>
             <div className="profile-preferences">
-              <SectionHeading title="Preferencias visuales" />
-              <div className="preference-options">
+              <SectionHeading title="Preferencias" />
+              {import.meta.env.DEV && <div className="preference-options">
                 {styles.map((s) => (
                   <Button
                     key={s.id}
@@ -430,7 +211,7 @@ export function StandardView({ view }: { view: string }) {
                     {s.name}
                   </Button>
                 ))}
-              </div>
+              </div>}
               <p className="text-muted-foreground text-sm mt-3">
                 Español (México) · Zona horaria: Ciudad de México
               </p>
