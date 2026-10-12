@@ -186,6 +186,7 @@
   --font-heading: "Manrope", Arial, sans-serif;
   --space-section: 30px;
   --sidebar-width: 244px;
+  --sidebar-compact-width: 72px;
   --header-height: 72px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -2825,8 +2826,9 @@ button {
 .sidebar-inner > nav {
   overflow-y: auto;
   min-height: 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
+.sidebar-inner > nav::-webkit-scrollbar { display: none; }
 .sidebar-bottom {
   flex-shrink: 0;
 }
@@ -2886,3 +2888,53 @@ button {
   .style-corporate .home-columns { grid-template-columns: 1fr; }
   .style-corporate .quick-actions > a { min-height: 44px; }
 }
+
+.compact-wordmark, .context-icon { display: none; }
+.context-link {
+  justify-content: flex-start;
+  width: 100%;
+  height: 34px;
+  padding: 8px 0;
+  border-radius: var(--radius);
+}
+.context-link:hover { background: var(--institutional-active); }
+.sidebar-toggle { color: var(--muted-foreground); flex-shrink: 0; }
+@media (min-width: 901px) {
+  .sidebar-collapsed { --sidebar-width: var(--sidebar-compact-width); }
+  .sidebar-collapsed .desktop-sidebar .sidebar-inner { padding: var(--space-lg) 10px 0; }
+  .sidebar-collapsed .desktop-sidebar .wordmark,
+  .sidebar-collapsed .desktop-sidebar .workspace-select,
+  .sidebar-collapsed .desktop-sidebar .nav-text,
+  .sidebar-collapsed .desktop-sidebar .nav-badge,
+  .sidebar-collapsed .desktop-sidebar .nav-trailing,
+  .sidebar-collapsed .desktop-sidebar .nav-section-label,
+  .sidebar-collapsed .desktop-sidebar .context-nav-label,
+  .sidebar-collapsed .desktop-sidebar .context-text,
+  .sidebar-collapsed .desktop-sidebar .sidebar-user .user-menu-trigger { display: none; }
+  .sidebar-collapsed .desktop-sidebar .compact-wordmark {
+    display: block; text-align: center; font-family: var(--font-heading);
+    font-size: 22px; font-weight: 800; margin-bottom: var(--space-lg);
+  }
+  .compact-wordmark > span { color: var(--primary); }
+  .sidebar-collapsed .desktop-sidebar .nav-item {
+    justify-content: center; padding: 0; height: 42px; margin: 3px 0;
+  }
+  .sidebar-collapsed .desktop-sidebar .nav-item.is-active::before { left: -10px; }
+  .sidebar-collapsed .desktop-sidebar .nav-section-label.modules-label {
+    display: block; padding: 0; height: 1px; margin: var(--space-md) var(--space-sm);
+    background: var(--institutional-border); font-size: 0;
+  }
+  .sidebar-collapsed .desktop-sidebar .modules-label > svg { display: none; }
+  .sidebar-collapsed .desktop-sidebar .context-nav {
+    display: block; padding: var(--space-sm) 0; margin: var(--space-sm) 0;
+    border-block: 1px solid var(--institutional-border);
+  }
+  .sidebar-collapsed .desktop-sidebar .context-icon { display: block; }
+  .sidebar-collapsed .desktop-sidebar .context-link { justify-content: center; padding: 0; height: 36px; }
+  .sidebar-collapsed .desktop-sidebar .context-link.active { background: var(--institutional-active); }
+  .sidebar-collapsed .desktop-sidebar .sidebar-user {
+    justify-content: center; margin-inline: -10px; padding: var(--space-md) 0;
+  }
+  .sidebar-collapsed .desktop-sidebar .sidebar-bottom { padding-top: var(--space-sm); }
+}
+@media (max-width: 900px) { .sidebar-toggle { display: none; } }

@@ -16,3 +16,4 @@
 - Use global semantic CSS tokens for identity and dimensions; official branding can then replace provisional values without changing feature code.
 - Gate the prototype toolbar and legacy style resolution with import.meta.env.DEV; outside development normalize every style to corporate so URL parameters cannot restore experimental layouts.
 - Use one operational home composition for all development styles; functional improvements belong in that shared composition, not alternative home implementations.
+- Keep desktop sidebar collapse state in AppShell memory and scope compact styling to desktop; the mobile drawer always retains labels and contextual navigation.
