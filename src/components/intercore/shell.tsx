@@ -312,12 +312,14 @@ export function ModuleLink({
   children,
   className,
   onClick,
+  label,
 }: {
   id: string;
   section?: string | undefined;
   children: ReactNode;
   className?: string;
   onClick?: (() => void) | undefined;
+  label?: string;
 }) {
   const { search } = useWorkspace();
   return section ? (
@@ -326,7 +328,8 @@ export function ModuleLink({
       params={{ module: id, section }}
       search={search}
       className={className}
-      title={section}
+      title={label ?? section}
+      aria-label={label ?? section}
       onClick={onClick}
     >
       {children}
@@ -337,8 +340,8 @@ export function ModuleLink({
       params={{ module: id }}
       search={search}
       className={className}
-      title={modules.find((m) => m.id === id)?.name}
-      aria-label={modules.find((m) => m.id === id)?.name}
+      title={label ?? modules.find((m) => m.id === id)?.name}
+      aria-label={label ?? modules.find((m) => m.id === id)?.name}
       onClick={onClick}
     >
       {children}
@@ -416,6 +419,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               <ModuleLink
                 id="cotizador"
                 section={s.section}
+                label={s.name}
                 key={s.name}
                 onClick={onNavigate}
               >
