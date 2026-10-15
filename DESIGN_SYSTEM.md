@@ -173,7 +173,7 @@ El modo compacto del sidebar (`.sidebar-collapsed`) aplica **solo ≥901 px**.
   - Formularios: `.form-grid` 2 columnas, gap 20 px; `.form-wide` ocupa toda la fila; `max-width: 780px`.
   - Métricas: `.quote-metrics` 3 columnas separadas por bordes verticales.
 - **Tablas:** no se usa `<table>`. Patrón de lista-tabla con CSS grid: `.task-table-head` + `.task-row` con `grid-template-columns: minmax(0,1fr) 72px 100px 135px`; filas separadas por `border-top`. Cotizaciones: `.quote-list` + `.quote-row` (flex).
-- **Modales:** no hay diálogos en las pantallas actuales. Los overlays existentes son `Sheet` (drawer móvil) y `DropdownMenu` (usuario, acciones de tarea/cotización). Si se necesita un modal, usar `@/components/ui/dialog` con tokens existentes.
+- **Modales:** no hay diálogos en las pantallas actuales. Los overlays existentes son `Sheet` (drawer móvil) y `DropdownMenu` (usuario, acciones de tarea/cotización). Para modales, tablas, pestañas y demás piezas futuras ver la sección 16.
 - **Formularios:** label encima del control (columna, gap 8 px), inputs nativos estilizados globalmente, acciones en `.form-actions` (flex, gap 10 px), botón principal primero.
 
 ---
@@ -405,7 +405,7 @@ Ejemplo de acción hacia un módulo:
 
 ### 16.11 Nómina, ERP y CRM (patrones de dominio)
 - **Detalle de registro:** encabezado con identificador, `StatusBadge` y acciones; cuerpo con Tabs; lista de propiedades en `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px), patrón ya usado en perfil.
-- **Totales:** filas de resumen alineadas a la derecha; total final 600, separado por borde superior doble no, simple 1 px `--foreground`.
+- **Totales:** filas de resumen alineadas a la derecha; total final 600, separado por borde superior de 1 px `--foreground`.
 - **Procesos por pasos (Stepper)** para cierres de nómina o pedidos: pasos numerados en círculo 24 px (pendiente borde `--border`, actual `--primary`, completo `--success` con `Check`), conectores 1 px; acciones Atrás/Siguiente en footer.
 - **Pipeline/Kanban (CRM):** columnas 280 px en `--background`, título 12 px 600 + contador; tarjetas `--card` borde 1 px, padding 12 px, sin sombra; arrastrar con alternativa por teclado/menú "Mover a".
 - **Línea de tiempo/actividad:** reutilizar `RecentActivity`; dot 8 px por evento, fecha 10 px muted.
