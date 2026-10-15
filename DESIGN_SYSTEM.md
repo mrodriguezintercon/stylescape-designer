@@ -326,13 +326,13 @@ Ejemplo de acción hacia un módulo:
 | Aspecto | Regla |
 |---|---|
 | Densidad | Filas 44 px (estándar) / 36 px (compacta, monitoreo y nómina). Texto de datos 12 px; encabezados de columna 10 px, mayúsculas, `letter-spacing 0.5px`, `--muted-foreground` |
-| Superficie | `--card` con borde 1 px `--border`, radio `--radius`; sin sombra. Overlays usan la única sombra permitida para flotantes: `--shadow-overlay` (crear: `0 8px 24px oklch(0.2 0.02 250 / 0.12)`) |
-| Números | Alineados a la derecha, `font-variant-numeric: tabular-nums`; moneda `es-MX` (`$12,450.00 MXN`); fechas `11 oct 2026`, horas 24 h |
+| Superficie | `--card` con borde 1 px `--border`, radio `--radius`; sin sombra. Overlays usan la única sombra permitida para flotantes: `--shadow-floating` (`0 12px 32px oklch(0.2 0.02 250 / 0.18)`) |
+| Números | Alineados a la derecha, `font-variant-numeric: tabular-nums`; columnas de cifras densas (importes, folios, contadores) usan `--font-numeric` (Roboto Mono); moneda `es-MX` (`$12,450.00 MXN`); fechas `11 oct 2026`, horas 24 h |
 | Color | Azul solo para selección/acción; estados con pares semánticos (fuerte + soft). Nunca codificar significado solo con color: acompañar con texto o ícono |
 | Íconos | lucide, 16 px en controles, 14 px en celdas |
 | Movimiento | Solo apertura/cierre de overlays ≤150 ms (`tw-animate-css` de shadcn); respetar `prefers-reduced-motion` |
 | Estados | Toda pieza de datos define: cargando (skeleton con `--muted`), vacío (`EmptyState`), error (`EmptyState icon="error"` + Reintentar), sin permiso (`icon="lock"`) |
-| Overlay z-index | Popover/Dropdown 50, Dialog/Sheet 50 sobre fondo `oklch(0.235 0.027 253 / 0.45)` (institucional translúcido, token `--overlay` a crear) |
+| Overlay z-index | Popover/Dropdown 50, Dialog/Sheet 50 sobre fondo `--overlay-backdrop` (`oklch(0.15 0.02 250 / 0.5)`, institucional translúcido) |
 
 ### 16.2 Tablas de datos (`DataTable`)
 - Base: `ui/table` (+ `ui/checkbox`, `ui/dropdown-menu`, `ui/pagination`).
