@@ -182,8 +182,11 @@
   --rose: oklch(0.53 0.13 10);
   --rose-soft: oklch(0.959 0.02 10);
   --shadow-subtle: 0 2px 5px oklch(0.2 0.02 250 / 0.025);
+  --shadow-floating: 0 12px 32px oklch(0.2 0.02 250 / 0.18);
+  --overlay-backdrop: oklch(0.15 0.02 250 / 0.5);
   --font-interface: "Roboto", Arial, sans-serif;
   --font-heading: "Manrope", Arial, sans-serif;
+  --font-numeric: "Roboto Mono", "SFMono-Regular", Consolas, monospace;
   --space-section: 30px;
   --sidebar-width: 244px;
   --sidebar-compact-width: 72px;
