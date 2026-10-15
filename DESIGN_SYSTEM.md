@@ -25,6 +25,8 @@ Sistema visual de Intercore (Corporate Workspace). Fuente de verdad del código:
 7. Verificar el código fuente antes de asumir que algo existe.
 8. Mantener accesibilidad, responsive y los estados loading, empty y error.
 
+> **Prioridad:** estas reglas prevalecen sobre cualquier recomendación, ejemplo o propuesta posterior del documento. Orden de precedencia: Reglas críticas → secciones A–G → Parte I → Parte III → Parte II.
+
 ---
 
 ## Índice
@@ -36,9 +38,10 @@ Sistema visual de Intercore (Corporate Workspace). Fuente de verdad del código:
 - [E. Accesibilidad transversal](#e-accesibilidad-transversal)
 - [F. Convenciones para datos](#f-convenciones-para-datos)
 - [G. Tabla de decisión para componentes similares](#g-tabla-de-decisión-para-componentes-similares)
-- **Parte I. Componentes existentes** — secciones 1 a 14
-- **Parte II. Componentes propuestos** — secciones 15 a 23
-- **Parte III. Reglas para agentes de código** y **Checklist antes de entregar UI**
+- [Parte I. Componentes existentes](#parte-i-componentes-existentes) — secciones 1 a 14
+- [Parte II. Componentes propuestos](#parte-ii-componentes-propuestos) — secciones 15 a 23
+- [Parte III. Reglas para agentes de código](#parte-iii-reglas-para-agentes-de-código)
+- [Checklist antes de entregar UI](#checklist-antes-de-entregar-ui)
 
 ---
 
@@ -144,11 +147,11 @@ Verificado contra `:root` de `src/styles.css`.
 | `--nav-item-height` | `40px` | `.nav-item` |
 | `--touch-target` | `44px` | `.mobile-menu` |
 
-### D.3 Documentados en este archivo pero aún no creados (sin literal equivalente consolidado)
+### D.3 Propuestos con valor de referencia (no existen como token; los valores aparecen dispersos o no aparecen en el código)
 `--control-sm` (32), `--control-md` (36), `--control-lg` (40), `--row-height` (44), `--row-height-compact` (36), `--icon-sm/md/lg` (14/16/18), `--radius-badge` (4), `--radius-full`, escala `--text-*` (9–26 px), `--text-display` (27).
 
-### D.4 Tokens propuestos
-`--z-overlay` (50, hoy lo resuelve shadcn), `--z-toast` (60), `--duration-overlay` (150 ms), `--ease-standard` (`cubic-bezier(0.2, 0, 0, 1)`), `--space-2xs` / `--space-xs` (4 / 6), `--space-xl` (32), `--row-hover`, `--row-selected`, `--info` / `--info-soft` (Pendiente de decisión).
+### D.4 Propuestos sin valor previo en el código
+`--z-overlay` (50; hoy lo aplican los primitivos shadcn, sin token), `--z-toast` (60), `--duration-overlay` (150 ms), `--ease-standard` (`cubic-bezier(0.2, 0, 0, 1)`), `--space-2xs` / `--space-xs` (4 / 6), `--space-xl` (32), `--row-hover`, `--row-selected`, `--info` / `--info-soft` (Pendiente de decisión).
 
 ---
 
@@ -187,7 +190,7 @@ Verificado contra `:root` de `src/styles.css`.
 | `null` / `undefined` / `NaN` | **No permitido** mostrarlos; formatear con un helper que devuelva "—" | `—` |
 | Información faltante | "—" en `--muted-foreground`; en formularios, campo vacío con placeholder | `—` |
 | Vencidas | Texto `--danger` + ícono `AlertCircle` + palabra "Vencida" | `Vencida · 8 oct 2026` |
-| Estados de cotización | Siempre con `StatusBadge` y texto, según los estados definidos en `src/data/intercore.ts`; nuevos estados requieren documentarse aquí | `Borrador`, `Por aprobar`, `Enviada` |
+| Estados de cotización | Siempre con `StatusBadge` y texto, según los estados de `initialQuotes` en `src/data/intercore.ts`. Hoy `StatusBadge` solo asigna color a `Alta`, `Media`, `Completado` y `En progreso`; los estados de cotización se muestran en `badge-neutral`. Su color propio es **Pendiente de decisión** | `Borrador`, `Por aprobar`, `Enviada` |
 
 ---
 
@@ -412,7 +415,7 @@ El modo compacto del sidebar (`.sidebar-collapsed`) aplica **solo ≥901 px**.
 | Input | `<input>` nativo con estilos globales | borde `--input`, fondo card, radio `--radius`, padding `10px 12px`; búsqueda del header sin borde interno |
 | Select | `<select>` nativo | mismos estilos que input; filtros 35 px alto, 11 px |
 | Card | `ModuleCard` (`.module-card`) | ícono en tono + favorito (estrella), título, descripción, pie con disponibilidad y “Acceder”; `module-unavailable` |
-| Badge | `StatusBadge` (`.status-badge`) | `badge-danger` (Alta, con dot), `badge-warning` (Media), `badge-success` (Completado), `badge-brand` (En progreso), `badge-neutral` |
+| Badge | `StatusBadge` (`.status-badge`), prop única `status` (texto) | La clase se deriva del texto: `badge-danger` (Alta, con dot), `badge-warning` (Media), `badge-success` (Completado), `badge-brand` (En progreso), `badge-neutral` (cualquier otro, p. ej. Pendiente, Borrador, Enviada) |
 | Contadores | `.nav-badge`, `.section-count` | numéricos, 10 px |
 | Alertas / errores | `StateGate` + `EmptyState icon="error"` | No se usa `Alert` de shadcn |
 | Lista-tabla | `PendingTaskList`, lista de cotizaciones | `compact` para el inicio |
@@ -593,7 +596,7 @@ Categorías de la sección A. El inventario consolidado está en la sección D.
 | Contenido sticky | Documentado pero no tokenizado | 2 |
 | Sidebar fijo | Documentado pero no tokenizado | 30 |
 | Barra de prototipo | Documentado pero no tokenizado | 45 |
-| Overlays Radix (popover, dropdown, dialog, sheet) | Implementado (shadcn) | 50 |
+| Overlays Radix (popover, dropdown, dialog, sheet) | Implementado en shadcn, sin token Intercore | 50 |
 | Toast | Propuesto | 60 |
 | Skip-link | Documentado pero no tokenizado | 100 |
 | Pendiente de migración | — | crear `--z-sticky`, `--z-sidebar`, `--z-prototype`, `--z-overlay`, `--z-toast`, `--z-skip` y sustituir los literales |
@@ -637,7 +640,7 @@ Los media queries CSS no admiten variables: mantener estos valores literales y d
 - **Íconos:** lucide, 14 / 16 / 18 px.
 - **Superficie:** `--card` + borde 1 px; overlays con `--shadow-floating` sobre `--overlay-backdrop`.
 
-Estructura de cada ficha: Estado · Propósito · Variantes · Estructura visual · Props sugeridas · Estados · Responsive · Accesibilidad · Ejemplo · Reglas de uso. La **relación con otros componentes** y el **cuándo no usarlo** se indican en Reglas de uso y en la tabla de decisión (sección G). Las fichas resumidas sin estos apartados están marcadas como "especificación pendiente". Los estados solo listan lo que difiere de la regla transversal.
+Estructura de cada ficha: Estado · Propósito · Variantes · Estructura visual · Props sugeridas · Estados · Responsive · Accesibilidad · Ejemplo · Reglas de uso y relación. La **relación con otros componentes** y el **cuándo no usarlo** se indican en ese apartado y en la tabla de decisión (sección G). Las fichas resumidas sin estos apartados están marcadas como "especificación pendiente". Los estados solo listan lo que difiere de la regla transversal.
 
 ---
 
@@ -648,7 +651,7 @@ Estado: **Implementado** · extensión **Propuesto** (grupos colapsables por mó
 #### Propósito
 Navegación global y contextual persistente (ver sección 8).
 #### Variantes
-Expandido 244 px · Compacto 72 px (existe) · Drawer móvil 280 px (existe) · extensión **Propuesto**: grupo colapsable.
+Expandido 244 px · Compacto 72 px (Implementado) · Drawer móvil 280 px (Implementado) · extensión **Propuesto**: grupo colapsable.
 #### Estructura visual
 Grupo: label 9 px mayúsculas `--institutional-muted` + `ChevronDown` 12 px; hijos con sangría 12 px.
 #### Props sugeridas
@@ -671,15 +674,15 @@ Estado: **Implementado** · extensión **Propuesto** (acción contextual de pág
 #### Propósito
 Búsqueda global, pendientes, notificaciones y perfil (sección 8).
 #### Variantes
-Estándar (existe) · extensión **Propuesto**: con `SystemBanner` debajo.
+Estándar (Implementado) · extensión **Propuesto**: con `SystemBanner` debajo.
 #### Estructura visual
 72 px, `--card`, borde inferior; acciones a la derecha separadas por divisor 1 px.
 #### Props sugeridas
 Ninguna nueva; las pantallas no inyectan elementos en el header.
 #### Estados
-Punto `--danger` en notificaciones no leídas (existe).
+Punto `--danger` en notificaciones no leídas (Implementado).
 #### Responsive
-≤900 px búsqueda se reduce; ≤640 px se convierte en botón ícono que abre Command palette (Pendiente de decisión).
+≤900 px búsqueda se reduce (Implementado); ≤640 px botón ícono que abre Command palette (Pendiente de decisión).
 #### Accesibilidad
 Botones de ícono con `aria-label` y contador en texto ("Notificaciones, 3 sin leer").
 #### Ejemplo de uso
@@ -688,23 +691,24 @@ Provisto por `AppShell`; no se instancia en pantallas.
 Las acciones de la página van en `PageHeading`, nunca en el header global.
 
 ### Componente: Breadcrumbs
-Estado: **Implementado** · extensión **Propuesto** (truncado)
+Estado: **Implementado** · extensión **Propuesto** (truncado y etiquetas personalizadas)
 #### Propósito
-Ubicación en vistas profundas, empieza en "Intercore".
+Ubicación en vistas profundas, empieza en "Intercore". Implementado: `<Breadcrumbs />` sin props, lo renderiza `AppShell` automáticamente a partir de la URL; las pantallas no lo instancian.
 #### Variantes
-Estándar (existe) · extensión **Propuesto**: truncado con `…` cuando hay más de 4 niveles.
+Estándar (Implementado) · extensión **Propuesto**: truncado con `…` cuando hay más de 4 niveles.
 #### Estructura visual
-10 px muted, separador `ChevronRight` 10 px; último nivel `--foreground` sin enlace.
+10 px muted, separador `ChevronRight` (12 px en el código); último nivel `--foreground` sin enlace.
 #### Props sugeridas
-`items: { label, to? }[]`, `maxItems = 4`.
+Extensión **Propuesto**: `items?: { label, to? }[]` para sobrescribir etiquetas (p. ej. folio de un registro), `maxItems = 4`. Hoy no acepta props.
 #### Estados
 Hover en enlace `--primary`.
 #### Responsive
-≤640 px muestra solo "‹ Nivel anterior".
+≤640 px muestra solo "‹ Nivel anterior" (Pendiente de decisión).
 #### Accesibilidad
-`nav aria-label="Ruta de navegación"`, último con `aria-current="page"`.
+`nav aria-label="Ruta de navegación"`, último con `aria-current="page"` (Implementado).
 #### Ejemplo de uso
 ```tsx
+// Propuesto, no funciona hoy
 <Breadcrumbs items={[{label:"Cotizador", to:"/modulos/cotizador"},{label:"COT-2026-0148"}]} />
 ```
 #### Reglas de uso y relación
@@ -882,7 +886,7 @@ Elegir una opción de ≤10.
 #### Variantes
 Nativo (preferido) · Radix con íconos.
 #### Estructura visual
-Base de input + `ChevronDown` 14 px; filtros 35 px y 11 px (existe).
+Base de input + `ChevronDown` 14 px; filtros 35 px y 11 px (Implementado).
 #### Props sugeridas
 `options: { value, label, disabled? }[]`, `placeholder`.
 #### Estados
@@ -1156,7 +1160,7 @@ Estado: **Implementado** (parcial) (`.filter-toolbar` con selects en pendientes)
 #### Propósito
 Combinar condiciones sobre listados.
 #### Variantes
-Barra rápida (existe) · Panel de filtros (Sheet derecho 400 px) · chips de filtros activos.
+Barra rápida (Implementado) · Panel de filtros (Sheet derecho 400 px) · chips de filtros activos.
 #### Estructura visual
 Chips bajo la barra: `badge-neutral` "Prioridad: Alta ×" + enlace "Limpiar filtros"; panel con secciones Accordion.
 #### Props sugeridas
@@ -1320,7 +1324,7 @@ Estado: **Implementado** (`ModuleCard`) · extensión **Propuesto**: `RecordCard
 #### Propósito
 Representar un objeto individual.
 #### Variantes
-Módulo (existe) · Registro (kanban, resultados).
+Módulo (Implementado) · Registro (kanban, resultados).
 #### Estructura visual
 `--card`, borde 1 px, radio `--radius`, padding 16 px, sin sombra; hover borde `--ring` solo si es clicable.
 #### Props sugeridas
@@ -1648,7 +1652,7 @@ Estado: **Propuesto**
 Primaria + botón `ChevronDown` 32 px separado por borde 1 px `--primary-foreground` al 30 %; abre DropdownMenu con variantes ("Guardar" / "Guardar y enviar"). El chevron con `aria-label="Más opciones de guardado"`. No usar si las opciones tienen igual importancia.
 
 ### Componente: Badges
-Estado: **Implementado** (`StatusBadge`: danger, warning, success, brand, neutral). Propuesto: tamaño `sm` 16 px para celdas compactas. Siempre con texto.
+Estado: **Implementado** (`StatusBadge status="…"`; clase derivada del texto: danger, warning, success, brand, neutral). Extensión **Propuesto**: tamaño `sm` 16 px para celdas compactas. Siempre con texto.
 
 ### Componente: Avatars
 Estado: **Implementado** (parcial) (avatar de usuario con iniciales en `--brand-soft`) · extensión **Propuesto**: `ui/avatar` 24/32/40 px con imagen y fallback de iniciales; `alt` con el nombre.
@@ -1736,18 +1740,18 @@ Lista de archivos: `FileText` 16 px, nombre (enlace), tamaño y fecha 11 px mute
 
 ---
 
-## 22. Patrones de alto nivel (Propuestos)
+## 22. Patrones de alto nivel
 
-> Todos estos patrones se renderizan dentro de `AppShell` y empiezan con `StateGate` → `Breadcrumbs` → `PageHeading`.
+> Todos estos patrones se renderizan dentro de `AppShell` (que ya muestra `Breadcrumbs` automáticamente) y empiezan con `StateGate` → `PageHeading`. Las filas marcadas Implementado describen lo existente; el resto es Propuesto.
 
 | # | Patrón | Estructura recomendada |
 |---|---|---|
-| 22.1 | **Dashboard** | `PageHeading` con selector de periodo → `MetricStrip` (3–4) → fila de 2 `ChartPanel` → lista de pendientes/alertas → actividad. El inicio actual (existente) es la referencia de jerarquía. |
+| 22.1 | **Dashboard** | `PageHeading` con selector de periodo → `MetricStrip` (3–4) → fila de 2 `ChartPanel` → lista de pendientes/alertas → actividad. El inicio actual (Implementado) es la referencia de jerarquía. |
 | 22.2 | **Listado** | `PageHeading` con 1 primaria ("Nuevo …") → `FilterBar` → `DataTable` → paginación. Estados vacío/filtros/error dentro de la tabla. |
-| 22.3 | **Detalle** | Breadcrumbs → encabezado con identificador, `StatusBadge`, acciones (primaria + menú) → `RecordTabs` (Resumen, Actividad, Documentos) → `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px). Lateral derecho opcional 320 px con metadatos. |
+| 22.3 | **Detalle** | Encabezado con identificador, `StatusBadge`, acciones (primaria + menú) → `RecordTabs` (Resumen, Actividad, Documentos) → `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px). Lateral derecho opcional 320 px con metadatos. |
 | 22.4 | **Creación y edición** | Página propia (`/nuevo`, `/:id/editar`) con `.form-grid` en secciones, máx. 780 px; footer de acciones fijo; Cancelar vuelve al detalle/listado; confirmar al salir con cambios. Formularios cortos → Modal o Drawer. |
 | 22.5 | **Configuración** | Sub-navegación contextual (patrón Cotizador → Configuración) + secciones con `SectionHeading`; Switch para efectos inmediatos, botón Guardar por sección para el resto. |
-| 22.6 | **Permisos y roles** | Lo no autorizado no se lista (existente). Acción no permitida dentro de una pantalla: ocultar si el usuario nunca podrá usarla; deshabilitar con Tooltip explicativo si es temporal. Matriz de roles: Data Table con checkboxes por permiso y columna de rol fija. Acceso directo por URL → `EmptyState icon="lock"` (existente). |
+| 22.6 | **Permisos y roles** | Lo no autorizado no se lista (Implementado). Acción no permitida dentro de una pantalla: ocultar si el usuario nunca podrá usarla; deshabilitar con Tooltip explicativo si es temporal. Matriz de roles: Data Table con checkboxes por permiso y columna de rol fija. Acceso directo por URL → `EmptyState icon="lock"` (Implementado). |
 | 22.7 | **Layout con sidebar** | Implementado; único layout de la aplicación. |
 | 22.8 | **Dos columnas** | Implementado en inicio (`1.7fr / 1fr`). Preferido: principal `minmax(0,1fr)` + lateral 320 px; ≤1100 px lateral debajo. |
 | 22.9 | **Tres columnas** | Lista 320 px · detalle `1fr` · contexto 280 px (bandejas, CRM). ≤1450 px se oculta el contexto en Drawer; ≤900 px solo una columna con navegación lista→detalle. Usar con moderación. |
@@ -1780,11 +1784,11 @@ Antes de crear cualquiera, revisar si ya existe en `widgets.tsx`.
 
 # Parte III. Reglas para agentes de código
 
-Complementan las *Reglas críticas para agentes* del inicio.
+Complementan las *Reglas críticas para agentes* del inicio; en caso de conflicto prevalecen las reglas críticas.
 
-1. Leer `DESIGN_SYSTEM.md` (y `AGENTS.md`) antes de crear o modificar UI.
+1. Leer `DESIGN_SYSTEM.md` (empezando por las Reglas críticas y la Parte I) y `AGENTS.md` antes de crear o modificar UI.
 2. Reutilizar componentes existentes (Parte I, sección 13) antes de crear otros.
-3. Utilizar primero los tokens definidos en `src/styles.css`; si falta uno, crearlo en `:root` según la sección 15.
+3. Utilizar primero los tokens definidos en `src/styles.css`; si falta uno, crearlo en `:root` según las secciones C y D, y actualizar su estado en este documento.
 4. No crear variantes visuales innecesarias.
 5. No inventar colores, tamaños ni espaciados; no hardcodear `#hex`, `text-white` o `bg-black`.
 6. Marcar como **Propuesto** cualquier decisión aún no implementada; al implementarla, moverla a la Parte I.
