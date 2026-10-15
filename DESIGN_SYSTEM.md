@@ -1,10 +1,24 @@
 # Intercore Design System
 
-Documentación del sistema visual **real** de Intercore (Corporate Workspace). Fuente de verdad del código: `src/styles.css` (tokens y clases), `src/components/intercore/shell.tsx` (shell y navegación), `widgets.tsx` (piezas operativas) y `views.tsx` (composiciones de pantalla).
+Sistema visual de Intercore (Corporate Workspace). Fuente de verdad del código: `src/styles.css` (tokens y clases), `src/components/intercore/shell.tsx` (shell y navegación), `widgets.tsx` (piezas operativas) y `views.tsx` (composiciones de pantalla).
 
 > La paleta y los wordmarks (`INTERCON.` / `INTERCORE WORKSPACE`) son **provisionales**. Cambia valores solo en los tokens de `:root` en `src/styles.css`.
 
+El documento tiene tres partes separadas:
+
+| Parte | Contenido | Estado |
+|---|---|---|
+| **I. Componentes existentes** | Solo lo que ya está en el código | Implementado |
+| **II. Componentes propuestos** | Especificaciones para piezas futuras | **Propuesto / No implementado** |
+| **III. Reglas para agentes de código** | Cómo trabajar con este sistema | Obligatorio |
+
+Nada de la Parte II debe tratarse como existente. Cuando una pieza propuesta se implemente, se mueve a la Parte I.
+
 ---
+
+# Parte I. Componentes existentes
+
+> Todo lo de esta parte está implementado y verificado en el código actual.
 
 ## 1. Lenguaje visual
 
@@ -173,7 +187,7 @@ El modo compacto del sidebar (`.sidebar-collapsed`) aplica **solo ≥901 px**.
   - Formularios: `.form-grid` 2 columnas, gap 20 px; `.form-wide` ocupa toda la fila; `max-width: 780px`.
   - Métricas: `.quote-metrics` 3 columnas separadas por bordes verticales.
 - **Tablas:** no se usa `<table>`. Patrón de lista-tabla con CSS grid: `.task-table-head` + `.task-row` con `grid-template-columns: minmax(0,1fr) 72px 100px 135px`; filas separadas por `border-top`. Cotizaciones: `.quote-list` + `.quote-row` (flex).
-- **Modales:** no hay diálogos en las pantallas actuales. Los overlays existentes son `Sheet` (drawer móvil) y `DropdownMenu` (usuario, acciones de tarea/cotización). Para modales, tablas, pestañas y demás piezas futuras ver la sección 16.
+- **Modales:** no hay diálogos en las pantallas actuales. Los overlays existentes son `Sheet` (drawer móvil) y `DropdownMenu` (usuario, acciones de tarea/cotización). Para modales, tablas, pestañas y demás piezas propuestas ver la Parte II.
 - **Formularios:** label encima del control (columna, gap 8 px), inputs nativos estilizados globalmente, acciones en `.form-actions` (flex, gap 10 px), botón principal primero.
 
 ---
@@ -297,145 +311,1244 @@ Ejemplo de acción hacia un módulo:
 
 ---
 
-## 15. Reglas para agentes de código (Lovable, OpenCode y otros)
+---
 
-1. Lee `AGENTS.md`, este archivo y `src/styles.css` antes de cambiar UI.
-2. Crea cada pantalla como ruta de archivo en `src/routes/` con `validateSearch: searchValidator` y su propio `head()`; nunca edites `routeTree.gen.ts`.
-3. Toda pantalla nueva se renderiza dentro de `AppShell` (ya en `__root.tsx`): no agregues headers, sidebars ni footers propios.
-4. Estructura de una pantalla: `StateGate` → `PageHeading` → `section.section-block` con `SectionHeading` → contenido.
-5. Navega siempre con `NavLink`/`ModuleLink` o `Link` pasando `search={search}` de `useWorkspace()`.
-6. Un módulo nuevo se agrega en `modules` (`src/data/intercore.ts`) con `icon`, `tone`, `available`, `authorized`, y su ícono en `moduleIcons`; su navegación contextual sigue el patrón de Cotizador en `Sidebar`.
-7. Estado y datos mock en el contexto de `AppShell`; nada de backend, polling o almacenamiento del navegador salvo petición explícita.
-8. Estilos: clases semánticas en `src/styles.css` con tokens existentes; si falta un valor, crea un token en `:root` en vez de un literal.
-9. Cubre siempre: hover, `:focus-visible`, activo, deshabilitado, cargando, vacío y error; `aria-label` en botones de ícono.
-10. Verifica a 1280 px, 900 px y 390 px: sin desbordes, drawer funcional y sidebar compacto correcto.
-11. No cambies tokens de identidad salvo que se entregue la marca oficial de Intercon.
+# Parte II. Componentes propuestos
+
+> **Estado de toda esta parte: Propuesto / No implementado.** Nada de lo siguiente existe todavía en las pantallas, salvo cuando se indica "Existente — extensión propuesta", en cuyo caso solo la extensión es nueva. Las decisiones que el proyecto aún no ha tomado se marcan como **Recomendación**.
+>
+> Al implementar:
+> - Base: primitivos de `src/components/ui/*` (shadcn/Radix) ya instalados, estilados con clases semánticas en `src/styles.css`.
+> - Wrappers reutilizables en `src/components/intercore/widgets.tsx` (o un archivo nuevo, p. ej. `data.tsx`, si crece). Nunca estilos sueltos por pantalla.
+> - Solo tokens existentes o los propuestos en la sección 15; nunca literales.
 
 ---
 
-## 16. Especificaciones para componentes futuros
+## 15. Tokens reutilizables
 
-> **Estado: normativo, aún no implementado.** Estas piezas no existen en las pantallas actuales. Definen cómo deben construirse cuando se necesiten (dashboards, ERP, CRM, monitoreo, nómina, calendario) para mantener el lenguaje de Corporate Workspace. Al implementarlas:
-> - Base: primitivos de `src/components/ui/*` (shadcn/Radix) ya instalados; estilarlos con clases semánticas en `src/styles.css`.
-> - Ubicación: wrappers reutilizables en `src/components/intercore/widgets.tsx` (o un archivo nuevo `data.tsx` si crece), nunca estilos sueltos por pantalla.
-> - Solo tokens existentes; si falta uno, se agrega a `:root`.
-> - Al implementar una pieza, mover su fila de "futuro" a la sección 9.
+Leyenda: **Existe** = ya en `:root` de `src/styles.css`. **Propuesto** = recomendación, aún no creado; crearlo en `:root` cuando un componente lo necesite.
 
-### 16.1 Reglas transversales
+### 15.1 Colores
+| Token | Estado | Valor |
+|---|---|---|
+| `--primary`, `--primary-foreground`, `--brand-soft`, `--accent` | Existe | ver sección 2 |
+| `--institutional`, `-fg`, `-muted`, `-active`, `-border` | Existe | ver sección 2 |
+| `--background`, `--card`, `--foreground`, `--muted`, `--muted-foreground`, `--border`, `--input`, `--ring` | Existe | ver sección 2 |
+| `--success` / `-soft`, `--warning` / `-soft`, `--danger` / `-soft` | Existe | ver sección 2 |
+| `--teal`, `--violet`, `--rose` (+ `-soft`) | Existe | tonos de módulo y series de gráficas |
+| `--overlay-backdrop` | Existe | `oklch(0.15 0.02 250 / 0.5)` |
+| `--info` / `--info-soft` | Propuesto (Recomendación) | alias de `--primary` / `--brand-soft`; solo crear si "información" debe diferenciarse de "acción" |
+| `--row-hover` | Propuesto | alias de `--background` |
+| `--row-selected` | Propuesto | alias de `--brand-soft` |
 
-| Aspecto | Regla |
-|---|---|
-| Densidad | Filas 44 px (estándar) / 36 px (compacta, monitoreo y nómina). Texto de datos 12 px; encabezados de columna 10 px, mayúsculas, `letter-spacing 0.5px`, `--muted-foreground` |
-| Superficie | `--card` con borde 1 px `--border`, radio `--radius`; sin sombra. Overlays usan la única sombra permitida para flotantes: `--shadow-floating` (`0 12px 32px oklch(0.2 0.02 250 / 0.18)`) |
-| Números | Alineados a la derecha, `font-variant-numeric: tabular-nums`; columnas de cifras densas (importes, folios, contadores) usan `--font-numeric` (Roboto Mono); moneda `es-MX` (`$12,450.00 MXN`); fechas `11 oct 2026`, horas 24 h |
-| Color | Azul solo para selección/acción; estados con pares semánticos (fuerte + soft). Nunca codificar significado solo con color: acompañar con texto o ícono |
-| Íconos | lucide, 16 px en controles, 14 px en celdas |
-| Movimiento | Solo apertura/cierre de overlays ≤150 ms (`tw-animate-css` de shadcn); respetar `prefers-reduced-motion` |
-| Estados | Toda pieza de datos define: cargando (skeleton con `--muted`), vacío (`EmptyState`), error (`EmptyState icon="error"` + Reintentar), sin permiso (`icon="lock"`) |
-| Overlay z-index | Popover/Dropdown 50, Dialog/Sheet 50 sobre fondo `--overlay-backdrop` (`oklch(0.15 0.02 250 / 0.5)`, institucional translúcido) |
+### 15.2 Tipografía
+| Token | Estado | Valor |
+|---|---|---|
+| `--font-interface` | Existe | Roboto |
+| `--font-heading` | Existe | Manrope |
+| `--font-numeric` | Existe | Roboto Mono |
+| Escala `--text-2xs/xs/sm/md/lg/xl/2xl` | Propuesto | 9 / 10 / 11 / 12 / 14 / 16 / 26 px (valores ya usados en el código, sección 3) |
+| `--text-display` | Propuesto | 27 px (métricas) |
 
-### 16.2 Tablas de datos (`DataTable`)
-- Base: `ui/table` (+ `ui/checkbox`, `ui/dropdown-menu`, `ui/pagination`).
-- Estructura: `section` → barra de herramientas → tabla → pie con paginación.
-- **Barra de herramientas** (`.filter-toolbar` existente): búsqueda 36 px a la izquierda; filtros (select 35 px) y acciones a la derecha; botón primario máximo uno ("Nuevo registro"). Con filas seleccionadas se reemplaza por barra de acción masiva: fondo `--brand-soft`, texto `--primary`, "3 seleccionados · Exportar · Eliminar".
-- **Encabezado:** fondo `--background`, borde inferior, `position: sticky; top: 0`. Ordenable con `ChevronsUpDown`/`ArrowUp`/`ArrowDown` 12 px y `aria-sort`.
-- **Filas:** separadas por `border-top`; hover `--background`; seleccionada `--brand-soft` + checkbox marcado; sin zebra. Primera columna = identificador en `font-weight 500`, enlazable (hover `--primary`).
-- **Celdas:** estado con `StatusBadge`; acciones de fila en última columna con botón ghost icono `MoreHorizontal` (`aria-label="Acciones de <registro>"`) que abre `DropdownMenu`; acción destructiva al final, separada, color `--danger`.
-- **Paginación:** pie 48 px, "1–25 de 312" a la izquierda (11 px muted), selector de filas por página y botones outline icono a la derecha.
-- **Responsive:** ≤900 px scroll horizontal con primera columna fija; ≤640 px cambiar a lista de tarjetas (`.task-row` como modelo).
-- Vacío con filtros: "Sin resultados para estos filtros" + botón outline "Limpiar filtros".
+### 15.3 Spacing
+| Token | Estado | Valor |
+|---|---|---|
+| `--space-sm` / `--space-md` / `--space-lg` | Existe | 8 / 16 / 24 px |
+| `--space-section` | Existe | 30 px |
+| `--space-2xs` / `--space-xs` | Propuesto | 4 / 6 px (gaps de íconos y chips) |
+| `--space-xl` | Propuesto | 32 px (padding horizontal de página ≈ 34 px actual) |
 
+### 15.4 Border radius
+| Token | Estado | Valor |
+|---|---|---|
+| `--radius` | Existe | 6 px (controles, tarjetas, overlays) |
+| `--radius-sm` / `-md` / `-lg` / `-xl` | Existe | derivados shadcn |
+| `--radius-badge` | Propuesto | 4 px (badges, tooltips, chips) |
+| `--radius-full` | Propuesto | 9999 px (avatares, dots, switch) |
+
+### 15.5 Sombras
+| Token | Estado | Uso |
+|---|---|---|
+| `--shadow-subtle` | Existe | casi invisible; tarjetas en estilos de desarrollo |
+| `--shadow-floating` | Existe | **única** sombra para overlays: popover, dropdown, dialog, sheet, toast |
+| Otras sombras | No permitidas | la elevación se expresa con borde 1 px |
+
+### 15.6 Z-index
+| Capa | Estado | Valor |
+|---|---|---|
+| Contenido sticky (encabezado de tabla) | Propuesto | 2 (ya usado como literal) |
+| Sidebar fijo | Existe (literal) | 30 |
+| Barra de prototipo | Existe (literal) | 45 |
+| Overlays Radix (popover, dropdown, dialog, sheet) | Existe (shadcn) | 50 |
+| Toast | Propuesto | 60 |
+| Skip-link | Existe (literal) | 100 |
+| Recomendación | — | crear `--z-sticky`, `--z-sidebar`, `--z-prototype`, `--z-overlay`, `--z-toast`, `--z-skip` y sustituir los literales |
+
+### 15.7 Breakpoints
+| Nombre | Estado | Media query | Dispositivo |
+|---|---|---|---|
+| wide | Existe | `≥1450px` | escritorio amplio |
+| desktop | Existe | `901–1449px` | escritorio |
+| laptop | Existe | `≤1100px` | escritorio estrecho / tablet horizontal |
+| tablet | Existe | `≤900px` | tablet; sidebar → drawer |
+| mobile | Existe | `≤640px` | móvil |
+Los media queries CSS no admiten variables: mantener estos valores literales y documentados aquí.
+
+### 15.8 Tamaños de controles
+| Token | Estado | Valor | Uso |
+|---|---|---|---|
+| `--control-sm` | Propuesto | 32 px | filtros densos, opciones de lista, celdas de calendario |
+| `--control-md` | Propuesto | 36 px | inputs, búsqueda, selects (valor actual en búsqueda) |
+| `--control-lg` | Propuesto | 40 px | botones de acción, nav items, triggers de tabs |
+| `--touch-target` | Propuesto | 44 px | mínimo táctil en móvil (ya usado en `.mobile-menu`) |
+| `--row-height` / `--row-height-compact` | Propuesto | 44 / 36 px | filas de tabla |
+| `--icon-sm` / `--icon-md` / `--icon-lg` | Propuesto | 14 / 16 / 18 px | celdas / controles / navegación |
+
+### 15.9 Movimiento
+| Token | Estado | Valor | Uso |
+|---|---|---|---|
+| `--duration-fast` | Propuesto | 150 ms | hover, color, borde (valor actual `0.15s`) |
+| `--duration-overlay` | Propuesto | 150 ms | apertura/cierre de overlays |
+| `--ease-standard` | Propuesto | `cubic-bezier(0.2, 0, 0, 1)` | todas las transiciones |
+| Reglas | — | sin animaciones continuas, pulsos ni parallax; `prefers-reduced-motion` anula todo (ya implementado) |
+
+---
+
+## 16. Reglas transversales para componentes propuestos
+
+- **Estados obligatorios** en toda pieza interactiva: default, hover (cambio de color 150 ms), focus (`:focus-visible` 2 px `--ring`, offset 3 px — ya global), active, disabled (opacidad 50 %, `cursor: not-allowed`, `aria-disabled`), loading (spinner `LoaderCircle` o skeleton con `--muted`, `aria-busy`), error (borde/texto `--danger` + texto explicativo), empty (`EmptyState`).
+- **Densidad:** texto de datos 12 px; encabezados de columna 10 px mayúsculas `letter-spacing 0.5px` muted.
+- **Números:** derecha, `tabular-nums`, `--font-numeric` en cifras densas; moneda `es-MX` (`$12,450.00 MXN`), fechas `11 oct 2026`, horas 24 h.
+- **Color:** azul solo para acción/selección; nunca significado solo por color.
+- **Íconos:** lucide, 14 / 16 / 18 px.
+- **Superficie:** `--card` + borde 1 px; overlays con `--shadow-floating` sobre `--overlay-backdrop`.
+
+Estructura de cada ficha: Propósito · Variantes · Estructura visual · Props sugeridas · Estados · Responsive · Accesibilidad · Ejemplo · Reglas de uso (incluye relación con otros componentes y cuándo no usarlo). Los estados solo listan lo que difiere de la regla transversal.
+
+---
+
+## 17. Navegación
+
+### Componente: Sidebar
+Estado: **Existente — extensión propuesta** (grupos colapsables por módulo con más de 6 secciones)
+#### Propósito
+Navegación global y contextual persistente (ver sección 8).
+#### Variantes
+Expandido 244 px · Compacto 72 px (existe) · Drawer móvil 280 px (existe) · **Propuesto:** grupo colapsable.
+#### Estructura visual
+Grupo: label 9 px mayúsculas `--institutional-muted` + `ChevronDown` 12 px; hijos con sangría 12 px.
+#### Props sugeridas
+`groups: { label, items, defaultOpen }[]`.
+#### Estados
+Grupo con ruta activa siempre abierto; activo = barra 3 px `--primary`.
+#### Responsive
+Drawer siempre expandido y con etiquetas; compacto muestra solo íconos con `title`.
+#### Accesibilidad
+`aria-expanded` en el botón del grupo; `<nav aria-label>` único.
+#### Ejemplo de uso
 ```tsx
-<DataTable
-  columns={columns}
-  rows={rows}
-  toolbar={<Button><Plus />Nuevo empleado</Button>}
-  selectable
-  emptyState={<EmptyState title="Sin empleados" description="Agrega el primer registro." />}
-/>
+<SidebarGroup label="Cotizador" defaultOpen>{items}</SidebarGroup>
 ```
+#### Reglas de uso
+No crear un segundo sidebar ni usar `ui/sidebar.tsx`. No agregar más de 2 niveles.
 
-### 16.3 Ventanas emergentes (`Dialog`, `AlertDialog`, `Sheet`)
-- **Dialog** (`ui/dialog`): fondo `--card`, radio `--radius`, `--shadow-overlay`, padding 24 px. Anchos: `sm` 400 px (confirmación), `md` 560 px (formulario corto, por defecto), `lg` 800 px (detalle). Alto máx. `85vh` con cuerpo desplazable y header/footer fijos.
-  - Header: título Manrope 16 px 700 + descripción 12 px muted; cerrar con `X` ghost icono.
-  - Footer: borde superior, acciones alineadas a la derecha; secundaria `outline` a la izquierda de la primaria.
-- **AlertDialog** (`ui/alert-dialog`): solo para acciones destructivas o irreversibles. Título como pregunta ("¿Eliminar la cotización COT-2026-0148?"), consecuencia explícita, botón con `variant="destructive"` nombrando la acción ("Eliminar"), nunca "Aceptar". Foco inicial en Cancelar.
-- **Sheet lateral derecho** (`ui/sheet side="right"`): edición o detalle de un registro sin perder la lista (CRM, ERP). Ancho 480 px (≤640 px: 100 %). Mismo header/footer que Dialog.
-- Reglas: no apilar más de un overlay; Escape y clic fuera cierran salvo formularios con cambios (pedir confirmación); devolver el foco al disparador; nunca abrir un modal al cargar una página.
+### Componente: Header
+Estado: **Existente — extensión propuesta** (acción contextual de página)
+#### Propósito
+Búsqueda global, pendientes, notificaciones y perfil (sección 8).
+#### Variantes
+Estándar (existe) · **Propuesto:** con `SystemBanner` debajo.
+#### Estructura visual
+72 px, `--card`, borde inferior; acciones a la derecha separadas por divisor 1 px.
+#### Props sugeridas
+Ninguna nueva; las pantallas no inyectan elementos en el header.
+#### Estados
+Punto `--danger` en notificaciones no leídas (existe).
+#### Responsive
+≤900 px búsqueda se reduce; ≤640 px se convierte en botón ícono que abre Command palette (Recomendación).
+#### Accesibilidad
+Botones de ícono con `aria-label` y contador en texto ("Notificaciones, 3 sin leer").
+#### Ejemplo de uso
+Provisto por `AppShell`; no se instancia en pantallas.
+#### Reglas de uso
+Las acciones de la página van en `PageHeading`, nunca en el header global.
 
-### 16.4 Pestañas (`Tabs`)
-- Base: `ui/tabs`. Uso: alternar vistas de un mismo objeto (Resumen · Actividad · Documentos). Para secciones de un módulo usar la navegación contextual del sidebar, no tabs.
-- Estilo: subrayado, no "píldoras". Lista con borde inferior 1 px `--border`, gap 24 px; trigger 40 px alto, 12 px, `--muted-foreground`; activo `--foreground`, 500, línea inferior 2 px `--primary`; hover `--foreground`.
-- Contador opcional como `.section-count`. Máximo 6 pestañas; ≤640 px scroll horizontal sin scrollbar visible.
-- Si la pestaña cambia el contenido principal de la página, reflejarla en un parámetro de búsqueda de la URL.
+### Componente: Breadcrumbs
+Estado: **Existente — extensión propuesta** (truncado)
+#### Propósito
+Ubicación en vistas profundas, empieza en "Intercore".
+#### Variantes
+Estándar (existe) · **Propuesto:** truncado con `…` cuando hay más de 4 niveles.
+#### Estructura visual
+10 px muted, separador `ChevronRight` 10 px; último nivel `--foreground` sin enlace.
+#### Props sugeridas
+`items: { label, to? }[]`, `maxItems = 4`.
+#### Estados
+Hover en enlace `--primary`.
+#### Responsive
+≤640 px muestra solo "‹ Nivel anterior".
+#### Accesibilidad
+`nav aria-label="Ruta de navegación"`, último con `aria-current="page"`.
+#### Ejemplo de uso
+```tsx
+<Breadcrumbs items={[{label:"Cotizador", to:"/modulos/cotizador"},{label:"COT-2026-0148"}]} />
+```
+#### Reglas de uso
+No usar como navegación principal.
 
-### 16.5 Formularios avanzados
-- Base: `ui/form`, `ui/label`, `ui/input`, `ui/textarea`, `ui/select`, `ui/checkbox`, `ui/radio-group`, `ui/switch`.
-- Diseño de `.form-grid` (2 columnas, gap 20 px); agrupar en secciones con `SectionHeading` y separadas por borde. Formularios largos (alta de empleado, factura): índice de secciones a la izquierda de 200 px fijo.
-- Obligatorios con `*` en `--danger` y `aria-required`; ayuda 11 px muted debajo del campo.
-- Error: borde `--danger`, mensaje 11 px `--danger` con `AlertCircle` 12 px, `aria-invalid` + `aria-describedby`; validar al salir del campo y al enviar, enfocando el primer error.
-- `Switch` solo para ajustes de efecto inmediato; `Checkbox` para opciones que se guardan con botón.
-- Botón de envío muestra `LoaderCircle` girando y queda deshabilitado mientras envía.
+### Componente: Tabs
+Estado: **Propuesto / No implementado**
+#### Propósito
+Alternar vistas de un mismo objeto (Resumen · Actividad · Documentos).
+#### Variantes
+Subrayado (único estilo) · con contador.
+#### Estructura visual
+Lista con borde inferior 1 px, gap 24 px; trigger 40 px, 12 px muted; activo `--foreground` 500 + línea 2 px `--primary`.
+#### Props sugeridas
+`tabs: { value, label, count?, disabled? }[]`, `value`, `onValueChange`, `syncWithUrl?: boolean`.
+#### Estados
+Hover `--foreground`; disabled 50 %; loading del panel con skeleton, no en el trigger.
+#### Responsive
+≤640 px scroll horizontal sin scrollbar visible.
+#### Accesibilidad
+`ui/tabs` (Radix): `role="tablist"`, flechas izquierda/derecha, Home/End.
+#### Ejemplo de uso
+```tsx
+<RecordTabs tabs={[{value:"resumen",label:"Resumen"},{value:"actividad",label:"Actividad",count:4}]} syncWithUrl />
+```
+#### Reglas de uso
+Máximo 6. No usar estilo píldora. No usar para secciones de un módulo (eso es sub-navegación).
 
-### 16.6 Selectores, combobox y fechas
-- **Combobox/búsqueda en lista** (`ui/command` en `ui/popover`): para listas >10 opciones (clientes, empleados). Input 36 px, opciones 32 px, seleccionada con `Check` `--primary`.
-- **Multiselección:** valores como chips `badge-neutral` con `X` 12 px dentro del control.
-- **Date picker** (`ui/calendar` en popover): celdas 32 px, día actual con borde `--primary`, seleccionado fondo `--primary` texto `--primary-foreground`, rango con `--brand-soft`, fines de semana `--muted-foreground`. Semana inicia en lunes, locale `es`.
+### Componente: Sub-navigation
+Estado: **Existente** como navegación contextual de Cotizador en el sidebar · **Propuesto:** variante horizontal en página
+#### Propósito
+Secciones de un módulo.
+#### Variantes
+En sidebar (existe, preferida) · Horizontal bajo `PageHeading` (Recomendación, solo si el módulo no tiene sidebar contextual).
+#### Estructura visual
+Horizontal: igual que Tabs pero cada item es un `Link` a una ruta.
+#### Props sugeridas
+`items: { label, to, icon? }[]`.
+#### Estados
+Activo por ruta (`aria-current="page"`).
+#### Responsive
+En móvil la contextual vive dentro del drawer.
+#### Accesibilidad
+`<nav aria-label="Secciones de <módulo>">`.
+#### Ejemplo de uso
+Patrón de Cotizador en `Sidebar`.
+#### Reglas de uso
+Cada sección es una ruta de archivo, no un estado local.
 
-### 16.7 KPIs y tarjetas de métricas (dashboards)
-- Patrón base: `.quote-metrics` (franja con divisores verticales), no tarjetas separadas con sombra.
-- Contenido: label 12 px muted → valor Manrope 27 px 700 tabular → variación 11 px con `TrendingUp`/`TrendingDown` en `--success`/`--danger` y periodo ("vs. mes anterior").
-- 3–4 KPIs por fila; ≤900 px 2 columnas; ≤640 px 1.
+### Componente: Menú contextual (Context menu)
+Estado: **Propuesto / No implementado**
+#### Propósito
+Acciones sobre un registro con clic derecho en tablas, kanban o calendario.
+#### Variantes
+Simple · con grupos y separadores · con atajos.
+#### Estructura visual
+Igual a `DropdownMenu`: `--popover`, borde, `--shadow-floating`, items 32 px 12 px, ícono 14 px; destructivo al final en `--danger`.
+#### Props sugeridas
+`items: { label, icon?, shortcut?, onSelect, destructive?, disabled? }[]`.
+#### Estados
+Item hover `--accent`; disabled 50 %.
+#### Responsive
+En táctil no existe clic derecho: las mismas acciones deben estar en el botón `MoreHorizontal`.
+#### Accesibilidad
+`ui/context-menu`; también abrir con Shift+F10 / tecla Menú.
+#### Ejemplo de uso
+```tsx
+<ContextMenu><ContextMenuTrigger><Row/></ContextMenuTrigger><ContextMenuContent>…</ContextMenuContent></ContextMenu>
+```
+#### Reglas de uso
+Nunca como único acceso a una acción.
 
-### 16.8 Gráficas
-- Base: `ui/chart` (Recharts). Colores en orden: `--primary`, `--teal`, `--violet`, `--warning`, `--rose`; nunca más de 5 series. Semánticos solo cuando la serie significa estado.
-- Ejes y cuadrícula `--border`, etiquetas 10 px muted, sin fondo ni gradientes de área fuertes (relleno máx. 12 % de opacidad). Tooltip = popover estándar.
-- Contenedor con `SectionHeading` + selector de periodo a la derecha; alto 240–320 px; texto alternativo o tabla equivalente disponible.
+### Componente: Command palette
+Estado: **Propuesto / No implementado**
+#### Propósito
+Extensión de la búsqueda global con teclado (`Ctrl/⌘ K`).
+#### Variantes
+Única.
+#### Estructura visual
+Dialog 560 px, input 44 px sin borde con `Search`, resultados agrupados (Módulos, Registros, Acciones) con label 10 px mayúsculas; item 36 px.
+#### Props sugeridas
+`groups`, `onSelect`, `placeholder`.
+#### Estados
+Vacío: "Sin resultados para «…»"; loading: skeleton de 3 filas.
+#### Responsive
+≤640 px pantalla completa.
+#### Accesibilidad
+`ui/command`; flechas, Enter, Escape; anuncio del número de resultados (`aria-live="polite"`).
+#### Ejemplo de uso
+```tsx
+<CommandPalette groups={[{label:"Módulos", items: authorizedModules}]} />
+```
+#### Reglas de uso
+Solo muestra módulos y registros autorizados. No sustituye a `/busqueda`.
 
-### 16.9 Monitoreo y estados en vivo
-- Indicador de estado: dot 8 px + texto (Operativo `--success`, Degradado `--warning`, Caído `--danger`, Sin datos `--muted-foreground`); nunca pulsos ni parpadeos.
-- "Actualizado hace 2 min" 11 px muted + botón ghost `RefreshCw` para refrescar manualmente; sin polling en el prototipo.
-- Tablas de incidentes en densidad compacta; severidad con `StatusBadge`.
+### Componente: Pagination
+Estado: **Propuesto / No implementado**
+#### Propósito
+Navegar páginas de tablas y listados.
+#### Variantes
+Completa (rango + filas por página + flechas) · Simple (anterior/siguiente) · "Cargar más" para feeds.
+#### Estructura visual
+Pie 48 px con borde superior: "1–25 de 312" 11 px muted a la izquierda; select de filas y botones outline ícono 32 px a la derecha.
+#### Props sugeridas
+`page`, `pageSize`, `total`, `onPageChange`, `pageSizeOptions = [25, 50, 100]`.
+#### Estados
+Flechas disabled en extremos.
+#### Responsive
+≤640 px solo flechas y "Página 2 de 13".
+#### Accesibilidad
+`nav aria-label="Paginación"`, `aria-current="page"`; página en la URL.
+#### Ejemplo de uso
+```tsx
+<Pagination page={2} pageSize={25} total={312} />
+```
+#### Reglas de uso
+Sin scroll infinito.
 
-### 16.10 Calendario y agenda
-- Vistas Mes · Semana · Día como `Tabs` en la barra de herramientas, más "Hoy" (outline) y flechas `ChevronLeft/Right` ghost; título del periodo Manrope 16 px.
-- Cuadrícula con bordes 1 px `--border` sobre `--card`; día actual con número en círculo `--primary`; fuera de mes `--muted-foreground` sobre `--background`.
-- Eventos: bloque con fondo soft del tono y borde izquierdo 3 px del tono fuerte (reutilizar `tone-*`), texto 11 px; "+3 más" como enlace. Línea de hora actual 1 px `--danger` en vistas semana/día.
-- Detalle de evento en Popover; creación/edición en Sheet derecho.
+---
 
-### 16.11 Nómina, ERP y CRM (patrones de dominio)
-- **Detalle de registro:** encabezado con identificador, `StatusBadge` y acciones; cuerpo con Tabs; lista de propiedades en `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px), patrón ya usado en perfil.
-- **Totales:** filas de resumen alineadas a la derecha; total final 600, separado por borde superior de 1 px `--foreground`.
-- **Procesos por pasos (Stepper)** para cierres de nómina o pedidos: pasos numerados en círculo 24 px (pendiente borde `--border`, actual `--primary`, completo `--success` con `Check`), conectores 1 px; acciones Atrás/Siguiente en footer.
-- **Pipeline/Kanban (CRM):** columnas 280 px en `--background`, título 12 px 600 + contador; tarjetas `--card` borde 1 px, padding 12 px, sin sombra; arrastrar con alternativa por teclado/menú "Mover a".
-- **Línea de tiempo/actividad:** reutilizar `RecentActivity`; dot 8 px por evento, fecha 10 px muted.
+## 18. Entrada de datos
 
-### 16.12 Retroalimentación
-- **Toast** (`ui/sonner`, montar `<Toaster />` una vez en `__root.tsx`): abajo a la derecha, `--card` con borde y `--shadow-overlay`, ícono semántico; 4 s; incluir "Deshacer" tras eliminar. Solo confirma acciones, nunca reemplaza errores de formulario.
-- **Alert en línea** (`ui/alert`): bloque con fondo soft semántico, borde 1 px del tono fuerte al 30 %, ícono 16 px, título 12 px 600 + texto 12 px. Info usa `--brand-soft`/`--primary`.
-- **Banner de sistema** (mantenimiento, sesión por expirar): franja bajo el header, 40 px, `--warning-soft`, cerrable.
-- **Progreso** (`ui/progress`): 6 px alto, pista `--muted`, relleno `--primary` (o semántico), con porcentaje en texto.
-- **Tooltip** (`ui/tooltip`): fondo `--institutional`, texto `--institutional-fg`, 11 px, radio 4 px, retardo 300 ms; solo información complementaria, nunca contenido esencial.
+> Base común (Existente): inputs y selects nativos con borde `--input`, fondo `--card`, radio `--radius`, padding `10px 12px`; label encima 12 px 500 (`.form-grid`). Los siguientes heredan esa base.
 
-### 16.13 Otros
-- **Avatar** (`ui/avatar`): iniciales en `--brand-soft`/`--primary`, 24/32/40 px; grupos superpuestos con borde 2 px `--card`, "+N".
-- **Acordeón** (`ui/accordion`): filas con borde inferior, título 12 px 500, `ChevronDown` que rota; para FAQ y filtros avanzados.
-- **Paginación/carga:** paginación numérica en tablas; "Cargar más" outline en listas de actividad; no scroll infinito.
-- **Command palette** (`ui/command` en dialog): atajo `Ctrl/⌘ K`, extensión de la búsqueda global; resultados agrupados (Módulos, Registros, Acciones).
+### Componente: Input
+Estado: **Existente — extensión propuesta** (prefijo/sufijo, ayuda y error)
+#### Propósito
+Texto de una línea.
+#### Variantes
+Texto, email, número, búsqueda (con `Search`), con prefijo (`$`) o sufijo (`MXN`).
+#### Estructura visual
+Altura 36 px (Recomendación; hoy depende del padding). Ayuda 11 px muted debajo.
+#### Props sugeridas
+`label`, `hint?`, `error?`, `required?`, `prefix?`, `suffix?`.
+#### Estados
+Error: borde `--danger`, mensaje 11 px con `AlertCircle` 12 px. Disabled: fondo `--muted`. Read-only: sin borde, fondo `--background`.
+#### Responsive
+100 % del ancho de su celda; en móvil `font-size` ≥16 px para evitar zoom (Recomendación).
+#### Accesibilidad
+`<label for>`, `aria-invalid`, `aria-describedby` a ayuda/error, `aria-required`.
+#### Ejemplo de uso
+```tsx
+<Field label="Cliente" required error={errors.client}><input id="client" /></Field>
+```
+#### Reglas de uso
+Placeholder nunca sustituye al label.
 
-### 16.14 Mapa de componentes futuros
+### Componente: Textarea
+Estado: **Propuesto / No implementado** como componente (hay textarea nativo en el formulario de cotización)
+#### Propósito
+Texto largo (observaciones, comentarios).
+#### Variantes
+Fija · autoajustable (máx. 8 líneas) · con contador.
+#### Estructura visual
+Base de input, mínimo 3 líneas, `resize: vertical`; contador "120/500" 11 px a la derecha.
+#### Props sugeridas
+`rows = 3`, `maxLength?`, `showCount?`.
+#### Estados
+Contador en `--danger` al superar el límite.
+#### Responsive
+Ancho completo (`.form-wide`).
+#### Accesibilidad
+Contador con `aria-live="polite"` solo al acercarse al límite.
+#### Ejemplo de uso
+```tsx
+<Textarea label="Observaciones" maxLength={500} showCount />
+```
+#### Reglas de uso
+No usar para texto con formato; eso requiere un editor (no previsto).
+
+### Componente: Select
+Estado: **Existente** (nativo) · **Propuesto:** `ui/select` estilizado cuando se requieran íconos en opciones
+#### Propósito
+Elegir una opción de ≤10.
+#### Variantes
+Nativo (preferido) · Radix con íconos.
+#### Estructura visual
+Base de input + `ChevronDown` 14 px; filtros 35 px y 11 px (existe).
+#### Props sugeridas
+`options: { value, label, disabled? }[]`, `placeholder`.
+#### Estados
+Sin opciones: deshabilitado con texto "Sin opciones disponibles".
+#### Responsive
+Nativo en móvil para usar el selector del sistema.
+#### Accesibilidad
+Label asociado; nativo da teclado gratis.
+#### Ejemplo de uso
+```tsx
+<select aria-label="Prioridad"><option>Alta</option></select>
+```
+#### Reglas de uso
+>10 opciones → Combobox. 2–4 opciones visibles → Radio group.
+
+### Componente: Combobox
+Estado: **Propuesto / No implementado**
+#### Propósito
+Seleccionar de listas largas con búsqueda (clientes, empleados).
+#### Variantes
+Simple · Múltiple (chips) · Creable ("Crear «…»").
+#### Estructura visual
+Trigger como input con `ChevronsUpDown`; popover con input 36 px y opciones 32 px; seleccionada con `Check` `--primary`. Chips `badge-neutral` con `X` 12 px.
+#### Props sugeridas
+`options`, `value`, `onChange`, `multiple?`, `creatable?`, `loading?`.
+#### Estados
+Loading: `LoaderCircle` en la lista; vacío: "Sin coincidencias".
+#### Responsive
+≤640 px el popover pasa a Sheet inferior (Recomendación).
+#### Accesibilidad
+`ui/command` en `ui/popover`; `role="combobox"`, `aria-expanded`, flechas, Enter, Escape; chips eliminables con Backspace.
+#### Ejemplo de uso
+```tsx
+<Combobox label="Cliente" options={clients} value={id} onChange={setId} />
+```
+#### Reglas de uso
+Relación: base de Autocomplete y de filtros avanzados.
+
+### Componente: Autocomplete
+Estado: **Propuesto / No implementado**
+#### Propósito
+Input de texto libre con sugerencias (direcciones, conceptos).
+#### Variantes
+Sugerencias locales · remotas con debounce 250 ms.
+#### Estructura visual
+Input normal; lista bajo el input con coincidencia en `font-weight 600`.
+#### Props sugeridas
+`suggestions`, `onQueryChange`, `minChars = 2`.
+#### Estados
+Loading en la lista; sin sugerencias: la lista no aparece.
+#### Responsive
+Igual que input.
+#### Accesibilidad
+`aria-autocomplete="list"`, `aria-activedescendant`.
+#### Ejemplo de uso
+```tsx
+<Autocomplete label="Concepto" suggestions={concepts} />
+```
+#### Reglas de uso
+Si el valor debe pertenecer a la lista, usar Combobox.
+
+### Componente: Date picker
+Estado: **Propuesto / No implementado**
+#### Propósito
+Elegir una fecha.
+#### Variantes
+Popover · inline (en calendario).
+#### Estructura visual
+Trigger input con `CalendarDays` 14 px y fecha `11 oct 2026`; `ui/calendar` con celdas 32 px; hoy borde `--primary`; seleccionado fondo `--primary`; fines de semana muted.
+#### Props sugeridas
+`value`, `onChange`, `minDate?`, `maxDate?`, `disabledDates?`.
+#### Estados
+Fechas fuera de rango disabled; error si se escribe una fecha inválida.
+#### Responsive
+≤640 px input nativo `type="date"` (Recomendación).
+#### Accesibilidad
+Escritura directa permitida (`dd/mm/aaaa`); flechas en la cuadrícula, PageUp/PageDown cambian mes.
+#### Ejemplo de uso
+```tsx
+<DatePicker label="Vigencia" value={date} onChange={setDate} />
+```
+#### Reglas de uso
+Semana inicia lunes, locale `es`.
+
+### Componente: Date range picker
+Estado: **Propuesto / No implementado**
+#### Propósito
+Periodos (reportes, nómina, filtros).
+#### Variantes
+Con atajos (Hoy, Últimos 7 días, Este mes, Mes anterior) · libre.
+#### Estructura visual
+Dos meses lado a lado; rango en `--brand-soft`, extremos `--primary`; atajos en columna izquierda 140 px.
+#### Props sugeridas
+`value: { from, to }`, `presets?`, `maxRangeDays?`.
+#### Estados
+"Aplicar" disabled hasta tener ambos extremos.
+#### Responsive
+≤640 px un solo mes y atajos arriba.
+#### Accesibilidad
+Anunciar "Inicio" / "Fin" seleccionados.
+#### Ejemplo de uso
+```tsx
+<DateRangePicker presets value={range} onChange={setRange} />
+```
+#### Reglas de uso
+Mostrar el rango como "1–15 oct 2026".
+
+### Componente: Time picker
+Estado: **Propuesto / No implementado**
+#### Propósito
+Horas en agendas y turnos.
+#### Variantes
+Input `HH:mm` · lista de intervalos (15/30 min).
+#### Estructura visual
+Input con `Clock` 14 px; lista 32 px por opción.
+#### Props sugeridas
+`value`, `step = 30`, `min?`, `max?`.
+#### Estados
+Error si fuera de rango.
+#### Responsive
+Nativo `type="time"` en móvil.
+#### Accesibilidad
+Formato 24 h explícito en la ayuda.
+#### Ejemplo de uso
+```tsx
+<TimePicker label="Inicio" step={15} />
+```
+#### Reglas de uso
+Siempre 24 h.
+
+### Componente: Checkbox
+Estado: **Existente** (nativo, radio 3 px) · **Propuesto:** estado indeterminado y grupo
+#### Propósito
+Opciones independientes que se guardan con un botón; selección de filas.
+#### Variantes
+Simple · con descripción · indeterminado.
+#### Estructura visual
+16 px, marcado `--primary`; label 12 px a la derecha, descripción 11 px muted.
+#### Props sugeridas
+`checked`, `indeterminate?`, `label`, `description?`.
+#### Estados
+Disabled 50 %; error en grupo con mensaje bajo el grupo.
+#### Responsive
+Área clicable incluye el label (≥44 px en móvil).
+#### Accesibilidad
+`fieldset` + `legend` en grupos; `aria-checked="mixed"`.
+#### Ejemplo de uso
+```tsx
+<Checkbox label="Incluir IVA" />
+```
+#### Reglas de uso
+Efecto inmediato → Switch.
+
+### Componente: Radio group
+Estado: **Propuesto / No implementado**
+#### Propósito
+Una opción de 2–5 visibles.
+#### Variantes
+Vertical · horizontal · tarjeta (borde 1 px, seleccionada borde `--primary` y fondo `--brand-soft`).
+#### Estructura visual
+Círculo 16 px, punto `--primary`.
+#### Props sugeridas
+`options`, `value`, `orientation`.
+#### Estados
+Grupo disabled; error bajo el grupo.
+#### Responsive
+Horizontal pasa a vertical ≤640 px.
+#### Accesibilidad
+`ui/radio-group`, flechas para moverse.
+#### Ejemplo de uso
+```tsx
+<RadioGroup options={["Mensual","Quincenal"]} />
+```
+#### Reglas de uso
+Tarjetas solo si cada opción necesita descripción.
+
+### Componente: Switch
+Estado: **Propuesto / No implementado**
+#### Propósito
+Ajustes de efecto inmediato (preferencias).
+#### Variantes
+Con label a la izquierda y descripción.
+#### Estructura visual
+36×20 px, pista `--input` / `--primary` activa, perilla `--card`.
+#### Props sugeridas
+`checked`, `onCheckedChange`, `label`, `description?`.
+#### Estados
+Loading: perilla con spinner mientras se aplica.
+#### Responsive
+Fila completa clicable.
+#### Accesibilidad
+`role="switch"`, `aria-checked`.
+#### Ejemplo de uso
+```tsx
+<Switch label="Notificaciones por correo" />
+```
+#### Reglas de uso
+Nunca en formularios con botón Guardar.
+
+### Componente: Slider
+Estado: **Propuesto / No implementado**
+#### Propósito
+Valores aproximados en un rango (márgenes, porcentajes en Price Model).
+#### Variantes
+Simple · rango · con input numérico acoplado.
+#### Estructura visual
+Pista 4 px `--muted`, relleno `--primary`, manija 16 px `--card` con borde `--primary`; valor en texto a la derecha.
+#### Props sugeridas
+`min`, `max`, `step`, `value`, `withInput?`.
+#### Estados
+Disabled 50 %.
+#### Responsive
+Manija 24 px en táctil.
+#### Accesibilidad
+`ui/slider`, flechas y PageUp/PageDown, `aria-valuetext` con unidad.
+#### Ejemplo de uso
+```tsx
+<Slider label="Margen" min={0} max={40} step={1} withInput />
+```
+#### Reglas de uso
+Si el valor exacto importa, siempre con input acoplado.
+
+### Componente: File upload
+Estado: **Propuesto / No implementado**
+#### Propósito
+Adjuntar documentos a registros.
+#### Variantes
+Botón · zona de arrastre · lista de archivos.
+#### Estructura visual
+Zona: borde 1 px discontinuo `--border`, `--background`, ícono `Upload` 20 px, "Arrastra o selecciona archivos" + límites 11 px muted. Archivo: fila con `FileText`, nombre, tamaño, `Progress` y botón quitar.
+#### Props sugeridas
+`accept`, `maxSizeMb`, `multiple`, `files`, `onFilesChange`.
+#### Estados
+Arrastrando: borde `--primary`, fondo `--brand-soft`. Error por archivo en `--danger` ("Supera 10 MB").
+#### Responsive
+≤640 px solo botón.
+#### Accesibilidad
+Input file real accesible por teclado; progreso con `aria-valuenow`.
+#### Ejemplo de uso
+```tsx
+<FileUpload accept=".pdf,.xlsx" maxSizeMb={10} multiple />
+```
+#### Reglas de uso
+En el prototipo los archivos solo viven en memoria.
+
+### Componente: Drag and drop
+Estado: **Propuesto / No implementado**
+#### Propósito
+Reordenar listas o mover tarjetas (kanban, columnas).
+#### Variantes
+Lista ordenable · entre columnas.
+#### Estructura visual
+Asa `GripVertical` 14 px muted; elemento arrastrado con `--shadow-floating`; destino con línea 2 px `--primary`.
+#### Props sugeridas
+`items`, `onReorder`.
+#### Estados
+Destino no permitido: cursor `not-allowed`.
+#### Responsive
+En táctil, pulsación larga; alternativa con menú "Mover a".
+#### Accesibilidad
+Alternativa por teclado obligatoria (Espacio para tomar, flechas, Espacio para soltar) y anuncio `aria-live`.
+#### Ejemplo de uso
+```tsx
+<SortableList items={columns} onReorder={setColumns} />
+```
+#### Reglas de uso
+Nunca como única forma de realizar una acción. Requiere evaluar dependencia nueva antes de agregarla.
+
+### Componente: Filtros avanzados
+Estado: **Existente** parcial (`.filter-toolbar` con selects en pendientes) · **Propuesto:** constructor de filtros
+#### Propósito
+Combinar condiciones sobre listados.
+#### Variantes
+Barra rápida (existe) · Panel de filtros (Sheet derecho 400 px) · chips de filtros activos.
+#### Estructura visual
+Chips bajo la barra: `badge-neutral` "Prioridad: Alta ×" + enlace "Limpiar filtros"; panel con secciones Accordion.
+#### Props sugeridas
+`filters: FilterDef[]`, `value`, `onChange`.
+#### Estados
+Contador en el botón "Filtros (3)".
+#### Responsive
+≤900 px los filtros rápidos se mueven al panel.
+#### Accesibilidad
+Cambios anunciados "24 resultados".
+#### Ejemplo de uso
+```tsx
+<FilterBar filters={taskFilters} value={search} />
+```
+#### Reglas de uso
+Persistir en la URL (ver patrón 22.10).
+
+### Componente: Formularios multipaso
+Estado: **Propuesto / No implementado** (ver Stepper y Wizard, sección 21)
+#### Propósito
+Altas largas divididas (empleado, pedido).
+#### Variantes
+Lineal · con navegación libre entre pasos completados.
+#### Estructura visual
+`Stepper` arriba, un paso visible, footer con Atrás / Siguiente / Guardar borrador.
+#### Props sugeridas
+`steps`, `current`, `onStepChange`, `validateStep`.
+#### Estados
+Paso con error marcado en `--danger`; loading en Siguiente al validar.
+#### Responsive
+≤640 px Stepper compacto "Paso 2 de 4".
+#### Accesibilidad
+Mover foco al título del paso al avanzar.
+#### Ejemplo de uso
+Ver Wizard.
+#### Reglas de uso
+Solo si hay más de ~12 campos; si no, formulario único con secciones.
+
+---
+
+## 19. Visualización de datos
+
+### Componente: Data Table
+Estado: **Propuesto / No implementado**
+#### Propósito
+Listar, comparar y operar registros.
+#### Variantes
+Estándar (fila 44 px) · Compacta (36 px) · Seleccionable · Expandible.
+#### Estructura visual
+`section` → barra de herramientas (búsqueda 36 px, filtros, 1 primaria) → tabla `--card` con borde → pie de paginación. Encabezado `--background` sticky, 10 px mayúsculas. Filas con `border-top`, sin zebra; hover `--background`; seleccionada `--brand-soft`. Primera columna identificador 500 enlazable. Acciones de fila con `MoreHorizontal`.
+#### Props sugeridas
+`columns: { id, header, cell, sortable?, align?, width? }[]`, `rows`, `getRowId`, `selectable?`, `density?`, `loading?`, `error?`, `emptyState?`, `toolbar?`.
+#### Estados
+Loading: 5 filas skeleton. Empty: `EmptyState` dentro de la tabla. Empty por filtros: "Sin resultados para estos filtros" + Limpiar filtros. Error: `EmptyState icon="error"` + Reintentar.
+#### Responsive
+≤900 px scroll horizontal con primera columna fija; ≤640 px tabla responsive (abajo).
+#### Accesibilidad
+`<table>` semántica (`ui/table`), `scope="col"`, `aria-sort`, `caption` visualmente oculto, checkbox con `aria-label="Seleccionar <registro>"`.
+#### Ejemplo de uso
+```tsx
+<DataTable columns={columns} rows={rows} selectable toolbar={<Button><Plus/>Nuevo empleado</Button>} />
+```
+#### Reglas de uso
+Hoy las listas usan grid (`.task-row`); al implementar, no mezclar ambos patrones en una pantalla.
+
+### Componente: Tabla responsive
+Estado: **Propuesto / No implementado**
+#### Propósito
+Mostrar la tabla en móvil.
+#### Variantes
+Tarjetas apiladas (≤640 px) · scroll horizontal (≤900 px).
+#### Estructura visual
+Cada fila → bloque con borde inferior: identificador 12 px 500 + badge, 2–3 pares label/valor 11 px, acciones a la derecha. Modelo: `.task-row`.
+#### Props sugeridas
+`mobilePrimary`, `mobileFields` en la definición de columnas.
+#### Estados
+Iguales a Data Table.
+#### Responsive
+Es su razón de ser.
+#### Accesibilidad
+Cada tarjeta es `<li>` con encabezado.
+#### Ejemplo de uso
+`columns={[{id:"folio", mobilePrimary:true}, …]}`.
+#### Reglas de uso
+No mostrar más de 4 campos por tarjeta.
+
+### Componente: Columnas configurables
+Estado: **Propuesto / No implementado**
+#### Propósito
+Mostrar/ocultar y reordenar columnas.
+#### Variantes
+Menú de columnas.
+#### Estructura visual
+Botón outline `Columns3` "Columnas" → popover con checkboxes y asas de orden; "Restablecer".
+#### Props sugeridas
+`visibleColumns`, `onVisibleColumnsChange`, `lockedColumns`.
+#### Estados
+Columna identificador bloqueada (disabled).
+#### Responsive
+Oculto ≤640 px.
+#### Accesibilidad
+Reordenar también con botones "Subir/Bajar".
+#### Ejemplo de uso
+```tsx
+<ColumnMenu columns={columns} />
+```
+#### Reglas de uso
+Preferencia en memoria del `AppShell` en el prototipo.
+
+### Componente: Ordenamiento
+Estado: **Propuesto / No implementado**
+#### Propósito
+Ordenar por columna.
+#### Estructura visual
+Encabezado como botón; `ChevronsUpDown` 12 px inactivo, `ArrowUp/Down` activo en `--foreground`.
+#### Variantes
+Una columna (por defecto) · múltiple con Shift (Recomendación: evitar).
+#### Props sugeridas
+`sort: { id, direction }`, `onSortChange`.
+#### Estados
+Hover en encabezado `--foreground`.
+#### Responsive
+En tarjetas, select "Ordenar por".
+#### Accesibilidad
+`aria-sort` en `th`.
+#### Ejemplo de uso
+`?sort=fecha.desc`.
+#### Reglas de uso
+Estado en la URL.
+
+### Componente: Filtrado de tabla
+Estado: **Propuesto / No implementado** — usa Filtros avanzados (sección 18).
+#### Reglas de uso
+Búsqueda de la barra filtra al escribir (debounce 250 ms); filtros de columna solo en tablas con >8 columnas.
+
+### Componente: Selección múltiple y acciones masivas
+Estado: **Propuesto / No implementado**
+#### Propósito
+Operar sobre varios registros.
+#### Variantes
+Por página · "Seleccionar los 312".
+#### Estructura visual
+Checkbox en encabezado (indeterminado); al seleccionar, la barra de herramientas se reemplaza por barra `--brand-soft`: "3 seleccionados · Exportar · Cambiar estado · Eliminar" + "Cancelar".
+#### Props sugeridas
+`selectedIds`, `onSelectionChange`, `bulkActions`.
+#### Estados
+Acción en curso: loading en el botón y filas bloqueadas.
+#### Responsive
+Barra fija inferior en móvil.
+#### Accesibilidad
+Anunciar el número de seleccionados.
+#### Ejemplo de uso
+```tsx
+<BulkBar count={3} actions={[{label:"Exportar"}, {label:"Eliminar", destructive:true}]} />
+```
+#### Reglas de uso
+Destructivas con Confirmation dialog que indica cantidad.
+
+### Componente: Cards
+Estado: **Existente** (`ModuleCard`) · **Propuesto:** `RecordCard` genérica
+#### Propósito
+Representar un objeto individual.
+#### Variantes
+Módulo (existe) · Registro (kanban, resultados).
+#### Estructura visual
+`--card`, borde 1 px, radio `--radius`, padding 16 px, sin sombra; hover borde `--ring` solo si es clicable.
+#### Props sugeridas
+`title`, `meta?`, `status?`, `actions?`, `to?`.
+#### Estados
+Disabled: `module-unavailable`.
+#### Responsive
+Grid 3 → 2 → 1 columnas.
+#### Accesibilidad
+Un único enlace principal por tarjeta.
+#### Ejemplo de uso
+`<ModuleCard module={m} />`.
+#### Reglas de uso
+No usar tarjetas para agrupar secciones de página.
+
+### Componente: Métricas
+Estado: **Existente** (`.quote-metrics`)
+Franja con divisores verticales, valor 27 px 700. Reutilizar tal cual para resúmenes de módulo.
+
+### Componente: KPI cards
+Estado: **Propuesto / No implementado** (extiende `.quote-metrics` como `MetricStrip`)
+#### Propósito
+Indicadores de dashboard con variación.
+#### Variantes
+Simple · con variación · con mini gráfico (sparkline 24 px, Recomendación).
+#### Estructura visual
+Label 12 px muted → valor Manrope 27 px 700 tabular → variación 11 px con `TrendingUp/Down` en `--success`/`--danger` + "vs. mes anterior".
+#### Props sugeridas
+`items: { label, value, delta?, deltaLabel?, to? }[]`.
+#### Estados
+Loading: skeleton del valor; sin datos: "—" y "Sin datos del periodo".
+#### Responsive
+3–4 por fila → 2 (≤900) → 1 (≤640).
+#### Accesibilidad
+Variación en texto ("aumentó 12 %"), no solo flecha.
+#### Ejemplo de uso
+```tsx
+<MetricStrip items={[{label:"Cotizado", value:"$1.2 M", delta:+12}]} />
+```
+#### Reglas de uso
+Máximo 4; no tarjetas separadas con sombra.
+
+### Componente: Gráficos
+Estado: **Propuesto / No implementado**
+#### Propósito
+Tendencias y comparaciones.
+#### Variantes
+Línea, barras, barras apiladas, dona (máx. 5 segmentos).
+#### Estructura visual
+`ui/chart`; colores en orden `--primary`, `--teal`, `--violet`, `--warning`, `--rose`; ejes y cuadrícula `--border`, etiquetas 10 px muted; relleno de área ≤12 % de opacidad; alto 240–320 px dentro de sección con `SectionHeading` y selector de periodo.
+#### Props sugeridas
+`data`, `series`, `type`, `height`.
+#### Estados
+Loading skeleton del alto completo; vacío "Sin datos para el periodo".
+#### Responsive
+Ancho 100 %; leyenda debajo ≤640 px.
+#### Accesibilidad
+Tabla equivalente o resumen textual; no depender solo del color.
+#### Ejemplo de uso
+```tsx
+<ChartPanel title="Cotizaciones por mes" type="bar" data={data} />
+```
+#### Reglas de uso
+Sin 3D ni gradientes; semánticos solo si la serie significa estado.
+
+### Componente: Timeline
+Estado: **Propuesto / No implementado**
+#### Propósito
+Historial cronológico de un registro.
+#### Estructura visual
+Línea vertical 1 px `--border`, dot 8 px por evento (tono semántico si aplica), fecha 10 px muted, texto 12 px.
+#### Variantes
+Simple · agrupado por día.
+#### Props sugeridas
+`events: { date, title, actor?, tone? }[]`.
+#### Estados
+Vacío: "Sin actividad registrada".
+#### Responsive
+Igual en todos los tamaños.
+#### Accesibilidad
+`<ol>` con `<time datetime>`.
+#### Ejemplo de uso
+`<Timeline events={history} />`.
+#### Reglas de uso
+Relación: Activity log usa este componente.
+
+### Componente: Activity feed
+Estado: **Existente** (`RecentActivity`) · **Propuesto:** "Cargar más" y filtros por tipo.
+
+### Componente: Calendario
+Estado: **Propuesto / No implementado**
+#### Propósito
+Agenda, vacaciones, turnos.
+#### Variantes
+Mes · Semana · Día (Tabs) · Agenda (lista).
+#### Estructura visual
+Barra: título Manrope 16 px, "Hoy" outline, flechas ghost, Tabs de vista. Cuadrícula bordes 1 px sobre `--card`; hoy con número en círculo `--primary`; fuera de mes muted sobre `--background`. Eventos: fondo soft del tono + borde izquierdo 3 px; "+3 más". Línea de hora actual 1 px `--danger`.
+#### Props sugeridas
+`events`, `view`, `date`, `onEventClick`, `onSlotClick`.
+#### Estados
+Loading skeleton de cuadrícula; vacío "Sin eventos esta semana".
+#### Responsive
+≤640 px vista Agenda por defecto.
+#### Accesibilidad
+Cuadrícula `role="grid"`; eventos como botones con fecha completa en `aria-label`.
+#### Ejemplo de uso
+```tsx
+<CalendarView view="semana" events={events} />
+```
+#### Reglas de uso
+Detalle en Popover; creación/edición en Drawer.
+
+### Componente: Kanban
+Estado: **Propuesto / No implementado**
+#### Propósito
+Pipeline por etapas (CRM, proyectos).
+#### Estructura visual
+Columnas 280 px `--background`, título 12 px 600 + contador; tarjetas `--card` borde 1 px, padding 12 px, sin sombra.
+#### Variantes
+Con o sin límite por columna.
+#### Props sugeridas
+`columns`, `items`, `onMove`.
+#### Estados
+Columna vacía con texto muted "Sin elementos".
+#### Responsive
+Scroll horizontal; ≤640 px una columna con selector de etapa.
+#### Accesibilidad
+Menú "Mover a" en cada tarjeta.
+#### Ejemplo de uso
+`<Kanban columns={stages} items={deals} />`.
+#### Reglas de uso
+Depende de Drag and drop; nunca solo arrastre.
+
+### Componente: Lista con búsqueda
+Estado: **Existente** parcial (búsqueda global y `PendingTaskList` con filtros) · **Propuesto:** `SearchableList` genérica
+#### Propósito
+Listas cortas filtrables sin tabla.
+#### Estructura visual
+Input búsqueda 36 px arriba; filas separadas por línea; coincidencia resaltada 600.
+#### Props sugeridas
+`items`, `filterBy`, `renderItem`.
+#### Estados
+Sin coincidencias: "Sin resultados para «…»".
+#### Accesibilidad
+Contador de resultados `aria-live`.
+#### Reglas de uso
+>50 elementos o columnas comparables → Data Table.
+
+---
+
+## 20. Feedback y estados
+
+### Componente: Alert
+Estado: **Propuesto / No implementado** (hoy los errores usan `EmptyState`)
+#### Propósito
+Mensaje en línea persistente dentro de una página o formulario.
+#### Variantes
+Info (`--brand-soft`/`--primary`), Success, Warning, Danger; cerrable o no; con acción.
+#### Estructura visual
+Fondo soft, borde 1 px del tono fuerte al 30 %, ícono 16 px, título 12 px 600 + texto 12 px.
+#### Props sugeridas
+`tone`, `title`, `children`, `action?`, `onClose?`.
+#### Accesibilidad
+`role="alert"` solo para errores; resto `role="status"`.
+#### Reglas de uso
+No usar para confirmaciones pasajeras (eso es Toast).
+
+### Componente: Toast
+Estado: **Propuesto / No implementado** (`<Toaster />` aún no montado)
+#### Propósito
+Confirmar acciones completadas.
+#### Variantes
+Éxito, error, info; con "Deshacer".
+#### Estructura visual
+Abajo a la derecha, `--card`, borde, `--shadow-floating`, ícono semántico, 12 px; 4 s.
+#### Props sugeridas
+`toast.success("Cotización guardada", { action })` (sonner).
+#### Responsive
+≤640 px arriba, ancho completo.
+#### Accesibilidad
+`aria-live="polite"`; no cerrar mientras tiene foco o hover.
+#### Reglas de uso
+Montar una vez en `__root.tsx`. Nunca para errores de validación.
+
+### Componente: Notification center
+Estado: **Existente** (`NotificationCenter`) · **Propuesto:** agrupación por día y filtro "No leídas".
+
+### Componente: Modal
+Estado: **Propuesto / No implementado**
+#### Propósito
+Tarea breve que requiere atención sin salir de la página.
+#### Variantes
+sm 400 px · md 560 px (por defecto) · lg 800 px.
+#### Estructura visual
+`--card`, radio `--radius`, `--shadow-floating`, padding 24 px, fondo `--overlay-backdrop`; header Manrope 16 px 700 + descripción 12 px + `X`; cuerpo desplazable (máx. 85vh); footer con borde, acciones a la derecha.
+#### Props sugeridas
+`title`, `description?`, `size`, `open`, `onOpenChange`, `footer`.
+#### Estados
+Envío: primaria con loading y cierre bloqueado.
+#### Responsive
+≤640 px pantalla completa.
+#### Accesibilidad
+`ui/dialog`: foco atrapado, Escape, retorno de foco al disparador, `aria-labelledby`.
+#### Ejemplo de uso
+```tsx
+<FormDialog title="Nuevo cliente" size="md">…</FormDialog>
+```
+#### Reglas de uso
+No apilar overlays; no abrir al cargar la página; con cambios sin guardar, confirmar antes de cerrar.
+
+### Componente: Drawer
+Estado: **Existente** (Sheet izquierdo móvil) · **Propuesto:** Sheet derecho de detalle/edición
+#### Propósito
+Ver o editar un registro sin perder la lista.
+#### Estructura visual
+Derecho 480 px (≤640 px 100 %), mismo header/footer que Modal.
+#### Props sugeridas
+`title`, `open`, `onOpenChange`, `width = 480`.
+#### Accesibilidad
+`ui/sheet`, igual que Modal.
+#### Reglas de uso
+Formularios de más de una columna → página de edición.
+
+### Componente: Confirmation dialog
+Estado: **Propuesto / No implementado**
+#### Propósito
+Confirmar acciones destructivas o irreversibles.
+#### Estructura visual
+Modal sm; título como pregunta ("¿Eliminar la cotización COT-2026-0148?"), consecuencia explícita; botón `destructive` con el verbo ("Eliminar"); Cancelar outline.
+#### Props sugeridas
+`title`, `description`, `confirmLabel`, `onConfirm`, `requireText?` (escribir el nombre para casos críticos).
+#### Accesibilidad
+`ui/alert-dialog`; foco inicial en Cancelar.
+#### Reglas de uso
+Nunca "Aceptar"/"Sí". Acciones reversibles → Toast con Deshacer en lugar de confirmar.
+
+### Componente: Tooltip
+Estado: **Existente** parcial (`title` en sidebar compacto) · **Propuesto:** `ui/tooltip`
+Fondo `--institutional`, texto `--institutional-fg`, 11 px, radio 4 px, retardo 300 ms. Solo información complementaria; aparece también con foco de teclado.
+
+### Componente: Popover
+Estado: **Propuesto / No implementado**
+#### Propósito
+Contenido interactivo ligero anclado (detalle de evento, filtros rápidos).
+#### Estructura visual
+`--popover`, borde, `--shadow-floating`, padding 12 px, ancho 280–360 px.
+#### Accesibilidad
+`ui/popover`, Escape, retorno de foco.
+#### Reglas de uso
+Si contiene un formulario de más de 3 campos → Drawer.
+
+### Componente: Progress bar
+Estado: **Propuesto / No implementado**
+6 px de alto, pista `--muted`, relleno `--primary` o semántico, porcentaje en texto 11 px. `role="progressbar"` con `aria-valuenow`. Indeterminado: sin animación continua; mostrar texto "Procesando…".
+
+### Componente: Skeleton
+Estado: **Existente** (`.skeleton-grid` en `StateGate`) · **Propuesto:** variantes fila, texto y KPI
+Bloques `--muted`, radio 4 px, sin brillo animado (Recomendación por la regla de no animaciones continuas).
+
+### Componente: Loading state
+Estado: **Existente** (`StateGate` loading: `LoaderCircle` + texto + skeleton, `role="status"`). Reutilizar; para secciones parciales usar skeleton de la propia sección.
+
+### Componente: Empty state
+Estado: **Existente** (`EmptyState`: inbox, bell, lock, error). Propuesto: variante compacta (sin ícono, 12 px) para tablas y paneles pequeños.
+
+### Componente: Error state
+Estado: **Existente** (`EmptyState icon="error"` + Reintentar). Propuesto: mostrar código de referencia 10 px muted para soporte.
+
+### Componente: Success state
+Estado: **Propuesto / No implementado**
+#### Propósito
+Cierre de un flujo largo (wizard, cierre de nómina).
+#### Estructura visual
+Patrón de `EmptyState` con `CircleCheck` 30 px en `--success`, título, resumen y 2 acciones ("Ver registro", "Crear otro").
+#### Reglas de uso
+Acciones simples → Toast, no pantalla de éxito.
+
+### Componente: Offline state
+Estado: **Propuesto / No implementado**
+#### Propósito
+Avisar pérdida de conexión cuando exista backend.
+#### Estructura visual
+`SystemBanner` warning bajo el header: `WifiOff` 14 px + "Sin conexión. Los cambios se guardarán al reconectar." + Reintentar.
+#### Accesibilidad
+`role="status"`.
+#### Reglas de uso
+No aplica al prototipo actual (sin red); documentado para la fase con backend.
+
+---
+
+## 21. Acciones y contenido
+
+### Componente: Buttons
+Estado: **Existente** (`ui/button`: default, outline, ghost, icon, sm) · **Propuesto:** `destructive` documentado y loading
+Alturas: sm 32 px, default 40 px. Loading: `LoaderCircle` 14 px a la izquierda, texto se conserva, `disabled` + `aria-busy`. Una primaria por grupo.
+
+### Componente: Button groups
+Estado: **Propuesto / No implementado**
+Botones outline unidos (borde compartido, radio solo en extremos); seleccionado fondo `--brand-soft`, texto `--primary`, `aria-pressed`. Uso: alternar vistas (Lista / Tarjetas). Máximo 4.
+
+### Componente: Split button
+Estado: **Propuesto / No implementado**
+Primaria + botón `ChevronDown` 32 px separado por borde 1 px `--primary-foreground` al 30 %; abre DropdownMenu con variantes ("Guardar" / "Guardar y enviar"). El chevron con `aria-label="Más opciones de guardado"`. No usar si las opciones tienen igual importancia.
+
+### Componente: Badges
+Estado: **Existente** (`StatusBadge`: danger, warning, success, brand, neutral). Propuesto: tamaño `sm` 16 px para celdas compactas. Siempre con texto.
+
+### Componente: Avatars
+Estado: **Existente** parcial (avatar de usuario con iniciales en `--brand-soft`) · **Propuesto:** `ui/avatar` 24/32/40 px con imagen y fallback de iniciales; `alt` con el nombre.
+
+### Componente: Avatar group
+Estado: **Propuesto / No implementado**
+Avatares 24 px superpuestos −6 px con borde 2 px `--card`, máximo 4 + "+N" en `--muted`. Tooltip con nombres; lista completa en Popover.
+
+### Componente: Tags
+Estado: **Propuesto / No implementado**
+Etiquetas de clasificación (no estado): `badge-neutral` 10 px, radio 4 px, eliminables con `X` 12 px (`aria-label="Quitar etiqueta X"`). No usar colores semánticos para tags.
+
+### Componente: Command actions
+Estado: **Propuesto / No implementado**
+Acciones registradas centralmente (`{ id, label, icon, shortcut, run, permission }`) que alimentan Command palette, menús y atajos. Atajo mostrado con `<kbd>` 10 px borde 1 px. Solo acciones permitidas al usuario.
+
+### Componente: Dropdown menu
+Estado: **Existente** (`UserMenu`, acciones de tarea/cotización). Propuesto: grupos con label 10 px, atajos y destructivo al final en `--danger` separado.
+
+### Componente: Accordion
+Estado: **Propuesto / No implementado**
+Filas con borde inferior, título 12 px 500 (40 px), `ChevronDown` que rota 180° (150 ms). `ui/accordion`. Uso: FAQ, filtros, secciones de configuración opcionales. No ocultar campos obligatorios.
+
+### Componente: Collapsible sections
+Estado: **Propuesto / No implementado**
+`SectionHeading` con botón `ChevronDown` y `aria-expanded`; estado abierto por defecto si contiene errores. `ui/collapsible`.
+
+### Componente: Stepper
+Estado: **Propuesto / No implementado**
+#### Propósito
+Indicar progreso en procesos por pasos.
+#### Variantes
+Horizontal · vertical · compacto ("Paso 2 de 4").
+#### Estructura visual
+Círculo 24 px (pendiente borde `--border`, actual `--primary`, completo `--success` con `Check`, error `--danger`), conectores 1 px, label 12 px.
+#### Props sugeridas
+`steps: { label, status }[]`, `current`, `onStepClick?`.
+#### Accesibilidad
+`<ol>`, paso actual `aria-current="step"`.
+#### Reglas de uso
+3–6 pasos.
+
+### Componente: Wizard
+Estado: **Propuesto / No implementado**
+#### Propósito
+Flujo guiado (cierre de nómina, alta de empleado).
+#### Estructura visual
+Página completa: `PageHeading` → Stepper → contenido del paso (`.form-grid`, máx. 780 px) → footer fijo con Atrás (outline), Guardar borrador (ghost), Siguiente/Finalizar (primaria). Final → Success state.
+#### Props sugeridas
+`steps`, `onFinish`, `onSaveDraft`.
+#### Estados
+Salir con cambios → confirmación.
+#### Responsive
+Footer fijo inferior en móvil.
+#### Accesibilidad
+Foco al título del paso; errores resumidos arriba.
+#### Ejemplo de uso
+```tsx
+<Wizard steps={["Datos","Puesto","Nómina","Revisión"]} onFinish={save} />
+```
+#### Reglas de uso
+Último paso siempre "Revisión". No usar dentro de un Modal.
+
+### Componente: Comments
+Estado: **Propuesto / No implementado**
+Lista: avatar 32 px, nombre 12 px 500, fecha 10 px muted, texto 12 px; caja de nuevo comentario (Textarea + "Comentar" primaria sm). Editar/eliminar propios en menú. Vacío: "Sin comentarios". Menciones (`@`) como Recomendación futura.
+
+### Componente: Activity log
+Estado: **Propuesto / No implementado**
+Auditoría de cambios ("Ana R. cambió Estado de Borrador a Enviada"): usa Timeline; valores anterior/nuevo en `--font-numeric` 11 px; filtros por usuario y fecha; solo lectura. Base para el módulo Auditoría.
+
+### Componente: Attachments
+Estado: **Propuesto / No implementado**
+Lista de archivos: `FileText` 16 px, nombre (enlace), tamaño y fecha 11 px muted, acciones Descargar/Eliminar. Carga con File upload. Vacío: "Sin archivos adjuntos". Eliminar → Confirmation dialog.
+
+---
+
+## 22. Patrones de alto nivel (Propuestos)
+
+> Todos estos patrones se renderizan dentro de `AppShell` y empiezan con `StateGate` → `Breadcrumbs` → `PageHeading`.
+
+| # | Patrón | Estructura recomendada |
+|---|---|---|
+| 22.1 | **Dashboard** | `PageHeading` con selector de periodo → `MetricStrip` (3–4) → fila de 2 `ChartPanel` → lista de pendientes/alertas → actividad. El inicio actual (existente) es la referencia de jerarquía. |
+| 22.2 | **Listado** | `PageHeading` con 1 primaria ("Nuevo …") → `FilterBar` → `DataTable` → paginación. Estados vacío/filtros/error dentro de la tabla. |
+| 22.3 | **Detalle** | Breadcrumbs → encabezado con identificador, `StatusBadge`, acciones (primaria + menú) → `RecordTabs` (Resumen, Actividad, Documentos) → `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px). Lateral derecho opcional 320 px con metadatos. |
+| 22.4 | **Creación y edición** | Página propia (`/nuevo`, `/:id/editar`) con `.form-grid` en secciones, máx. 780 px; footer de acciones fijo; Cancelar vuelve al detalle/listado; confirmar al salir con cambios. Formularios cortos → Modal o Drawer. |
+| 22.5 | **Configuración** | Sub-navegación contextual (patrón Cotizador → Configuración) + secciones con `SectionHeading`; Switch para efectos inmediatos, botón Guardar por sección para el resto. |
+| 22.6 | **Permisos y roles** | Lo no autorizado no se lista (existente). Acción no permitida dentro de una pantalla: ocultar si el usuario nunca podrá usarla; deshabilitar con Tooltip explicativo si es temporal. Matriz de roles: Data Table con checkboxes por permiso y columna de rol fija. Acceso directo por URL → `EmptyState icon="lock"` (existente). |
+| 22.7 | **Layout con sidebar** | Existente; único layout de la aplicación. |
+| 22.8 | **Dos columnas** | Existente en inicio (`1.7fr / 1fr`). Recomendación general: principal `minmax(0,1fr)` + lateral 320 px; ≤1100 px lateral debajo. |
+| 22.9 | **Tres columnas** | Lista 320 px · detalle `1fr` · contexto 280 px (bandejas, CRM). ≤1450 px se oculta el contexto en Drawer; ≤900 px solo una columna con navegación lista→detalle. Usar con moderación. |
+| 22.10 | **Filtros persistentes** | Filtros, orden, página y pestaña en search params de la URL (junto a `style` y `state`), para compartir enlaces y conservar al volver. Nunca en almacenamiento del navegador en el prototipo. |
+| 22.11 | **Búsqueda global** | Existente (header + `/busqueda`). Propuesto: Command palette `Ctrl/⌘ K`, resultados agrupados por tipo, solo contenido autorizado. |
+| 22.12 | **Acciones masivas** | Barra de selección (sección 19); resultado con Toast ("12 registros actualizados"); errores parciales con Alert listando los fallidos. |
+| 22.13 | **Destructivas** | Confirmation dialog nombrando el objeto y la consecuencia; reversibles → Toast con Deshacer; críticas (eliminar módulo, cerrar nómina) → escribir el nombre para confirmar. |
+| 22.14 | **Sin datos** | Distinguir siempre: primer uso (EmptyState + acción de crear), sin resultados por filtros (Limpiar filtros), sin permiso (lock), error (Reintentar). |
+| 22.15 | **Responsive** | Escritorio ≥901 px: sidebar fijo/compacto, tablas completas. Tablet ≤900 px: drawer, tablas con scroll, lateral debajo. Móvil ≤640 px: 1 columna, tablas como tarjetas, overlays a pantalla completa, objetivos de 44 px, acciones principales visibles sin scroll horizontal. |
+
+---
+
+## 23. Mapa de componentes propuestos
 
 | Necesidad | Primitivo base | Wrapper Intercore propuesto |
 |---|---|---|
-| Tabla de datos | `ui/table` | `DataTable`, `TableToolbar`, `RowActions` |
-| Modal / confirmación | `ui/dialog`, `ui/alert-dialog` | `FormDialog`, `ConfirmDialog` |
-| Panel de detalle | `ui/sheet` | `RecordSheet` |
+| Tabla | `ui/table` | `DataTable`, `TableToolbar`, `RowActions`, `BulkBar`, `ColumnMenu` |
+| Overlays | `ui/dialog`, `ui/alert-dialog`, `ui/sheet`, `ui/popover` | `FormDialog`, `ConfirmDialog`, `RecordSheet` |
 | Pestañas | `ui/tabs` | `RecordTabs` |
-| KPIs | — | `MetricStrip` (extiende `.quote-metrics`) |
-| Gráficas | `ui/chart` | `ChartPanel` |
-| Fechas | `ui/calendar`, `ui/popover` | `DatePicker`, `CalendarView` |
-| Selección avanzada | `ui/command`, `ui/popover` | `Combobox` |
-| Pasos | — | `Stepper` |
+| KPIs y gráficas | `ui/chart` | `MetricStrip`, `ChartPanel` |
+| Fechas | `ui/calendar`, `ui/popover` | `DatePicker`, `DateRangePicker`, `CalendarView` |
+| Selección | `ui/command`, `ui/popover` | `Combobox`, `CommandPalette` |
+| Formularios | `ui/form`, `ui/label` | `Field`, `Wizard`, `Stepper` |
 | Avisos | `ui/sonner`, `ui/alert` | `InlineAlert`, `SystemBanner` |
+| Contenido | — | `Timeline`, `Comments`, `Attachments`, `Kanban` |
 
-Antes de crear cualquiera de estos, revisar si ya fue implementado en `widgets.tsx` y reutilizarlo.
+Antes de crear cualquiera, revisar si ya existe en `widgets.tsx`.
+
+---
+
+# Parte III. Reglas para agentes de código
+
+1. Leer `DESIGN_SYSTEM.md` (y `AGENTS.md`) antes de crear o modificar UI.
+2. Reutilizar componentes existentes (Parte I, sección 13) antes de crear otros.
+3. Utilizar primero los tokens definidos en `src/styles.css`; si falta uno, crearlo en `:root` según la sección 15.
+4. No crear variantes visuales innecesarias.
+5. No inventar colores, tamaños ni espaciados; no hardcodear `#hex`, `text-white` o `bg-black`.
+6. Marcar como **Propuesto** cualquier decisión aún no implementada; al implementarla, moverla a la Parte I.
+7. Conservar la consistencia entre módulos: mismo shell, mismas estructuras de pantalla y mismos componentes.
+8. Validar escritorio (1280 px), tablet (900 px) y móvil (390 px).
+9. Incluir siempre los estados loading, empty, error y disabled.
+10. Respetar accesibilidad y navegación por teclado: foco visible, `aria-label` en botones de ícono, labels reales, Escape en overlays.
+
+Reglas específicas del proyecto:
+- Cada pantalla es una ruta de archivo en `src/routes/` con `validateSearch: searchValidator` y su propio `head()`; nunca editar `routeTree.gen.ts`.
+- Toda pantalla se renderiza dentro de `AppShell`; estructura `StateGate` → `PageHeading` → `section.section-block` con `SectionHeading`.
+- Navegar con `NavLink`/`ModuleLink` o `Link` pasando `search` de `useWorkspace()`.
+- Módulos nuevos en `modules` (`src/data/intercore.ts`) con `icon`, `tone`, `available`, `authorized`.
+- Datos mock en el contexto de `AppShell`; sin backend, polling ni almacenamiento del navegador salvo petición explícita.
+- No cambiar tokens de identidad hasta recibir la marca oficial de Intercon.
