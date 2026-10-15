@@ -187,7 +187,7 @@ Verificado contra `:root` de `src/styles.css`.
 | `null` / `undefined` / `NaN` | **No permitido** mostrarlos; formatear con un helper que devuelva "—" | `—` |
 | Información faltante | "—" en `--muted-foreground`; en formularios, campo vacío con placeholder | `—` |
 | Vencidas | Texto `--danger` + ícono `AlertCircle` + palabra "Vencida" | `Vencida · 8 oct 2026` |
-| Estados de cotización | Siempre con `StatusBadge` y texto, según los estados definidos en `src/data/intercore.ts`; nuevos estados requieren documentarse aquí | `Borrador`, `Enviada` |
+| Estados de cotización | Siempre con `StatusBadge` y texto, según los estados definidos en `src/data/intercore.ts`; nuevos estados requieren documentarse aquí | `Borrador`, `Por aprobar`, `Enviada` |
 
 ---
 
