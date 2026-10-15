@@ -310,3 +310,132 @@ Ejemplo de acción hacia un módulo:
 9. Cubre siempre: hover, `:focus-visible`, activo, deshabilitado, cargando, vacío y error; `aria-label` en botones de ícono.
 10. Verifica a 1280 px, 900 px y 390 px: sin desbordes, drawer funcional y sidebar compacto correcto.
 11. No cambies tokens de identidad salvo que se entregue la marca oficial de Intercon.
+
+---
+
+## 16. Especificaciones para componentes futuros
+
+> **Estado: normativo, aún no implementado.** Estas piezas no existen en las pantallas actuales. Definen cómo deben construirse cuando se necesiten (dashboards, ERP, CRM, monitoreo, nómina, calendario) para mantener el lenguaje de Corporate Workspace. Al implementarlas:
+> - Base: primitivos de `src/components/ui/*` (shadcn/Radix) ya instalados; estilarlos con clases semánticas en `src/styles.css`.
+> - Ubicación: wrappers reutilizables en `src/components/intercore/widgets.tsx` (o un archivo nuevo `data.tsx` si crece), nunca estilos sueltos por pantalla.
+> - Solo tokens existentes; si falta uno, se agrega a `:root`.
+> - Al implementar una pieza, mover su fila de "futuro" a la sección 9.
+
+### 16.1 Reglas transversales
+
+| Aspecto | Regla |
+|---|---|
+| Densidad | Filas 44 px (estándar) / 36 px (compacta, monitoreo y nómina). Texto de datos 12 px; encabezados de columna 10 px, mayúsculas, `letter-spacing 0.5px`, `--muted-foreground` |
+| Superficie | `--card` con borde 1 px `--border`, radio `--radius`; sin sombra. Overlays usan la única sombra permitida para flotantes: `--shadow-overlay` (crear: `0 8px 24px oklch(0.2 0.02 250 / 0.12)`) |
+| Números | Alineados a la derecha, `font-variant-numeric: tabular-nums`; moneda `es-MX` (`$12,450.00 MXN`); fechas `11 oct 2026`, horas 24 h |
+| Color | Azul solo para selección/acción; estados con pares semánticos (fuerte + soft). Nunca codificar significado solo con color: acompañar con texto o ícono |
+| Íconos | lucide, 16 px en controles, 14 px en celdas |
+| Movimiento | Solo apertura/cierre de overlays ≤150 ms (`tw-animate-css` de shadcn); respetar `prefers-reduced-motion` |
+| Estados | Toda pieza de datos define: cargando (skeleton con `--muted`), vacío (`EmptyState`), error (`EmptyState icon="error"` + Reintentar), sin permiso (`icon="lock"`) |
+| Overlay z-index | Popover/Dropdown 50, Dialog/Sheet 50 sobre fondo `oklch(0.235 0.027 253 / 0.45)` (institucional translúcido, token `--overlay` a crear) |
+
+### 16.2 Tablas de datos (`DataTable`)
+- Base: `ui/table` (+ `ui/checkbox`, `ui/dropdown-menu`, `ui/pagination`).
+- Estructura: `section` → barra de herramientas → tabla → pie con paginación.
+- **Barra de herramientas** (`.filter-toolbar` existente): búsqueda 36 px a la izquierda; filtros (select 35 px) y acciones a la derecha; botón primario máximo uno ("Nuevo registro"). Con filas seleccionadas se reemplaza por barra de acción masiva: fondo `--brand-soft`, texto `--primary`, "3 seleccionados · Exportar · Eliminar".
+- **Encabezado:** fondo `--background`, borde inferior, `position: sticky; top: 0`. Ordenable con `ChevronsUpDown`/`ArrowUp`/`ArrowDown` 12 px y `aria-sort`.
+- **Filas:** separadas por `border-top`; hover `--background`; seleccionada `--brand-soft` + checkbox marcado; sin zebra. Primera columna = identificador en `font-weight 500`, enlazable (hover `--primary`).
+- **Celdas:** estado con `StatusBadge`; acciones de fila en última columna con botón ghost icono `MoreHorizontal` (`aria-label="Acciones de <registro>"`) que abre `DropdownMenu`; acción destructiva al final, separada, color `--danger`.
+- **Paginación:** pie 48 px, "1–25 de 312" a la izquierda (11 px muted), selector de filas por página y botones outline icono a la derecha.
+- **Responsive:** ≤900 px scroll horizontal con primera columna fija; ≤640 px cambiar a lista de tarjetas (`.task-row` como modelo).
+- Vacío con filtros: "Sin resultados para estos filtros" + botón outline "Limpiar filtros".
+
+```tsx
+<DataTable
+  columns={columns}
+  rows={rows}
+  toolbar={<Button><Plus />Nuevo empleado</Button>}
+  selectable
+  emptyState={<EmptyState title="Sin empleados" description="Agrega el primer registro." />}
+/>
+```
+
+### 16.3 Ventanas emergentes (`Dialog`, `AlertDialog`, `Sheet`)
+- **Dialog** (`ui/dialog`): fondo `--card`, radio `--radius`, `--shadow-overlay`, padding 24 px. Anchos: `sm` 400 px (confirmación), `md` 560 px (formulario corto, por defecto), `lg` 800 px (detalle). Alto máx. `85vh` con cuerpo desplazable y header/footer fijos.
+  - Header: título Manrope 16 px 700 + descripción 12 px muted; cerrar con `X` ghost icono.
+  - Footer: borde superior, acciones alineadas a la derecha; secundaria `outline` a la izquierda de la primaria.
+- **AlertDialog** (`ui/alert-dialog`): solo para acciones destructivas o irreversibles. Título como pregunta ("¿Eliminar la cotización COT-2026-0148?"), consecuencia explícita, botón con `variant="destructive"` nombrando la acción ("Eliminar"), nunca "Aceptar". Foco inicial en Cancelar.
+- **Sheet lateral derecho** (`ui/sheet side="right"`): edición o detalle de un registro sin perder la lista (CRM, ERP). Ancho 480 px (≤640 px: 100 %). Mismo header/footer que Dialog.
+- Reglas: no apilar más de un overlay; Escape y clic fuera cierran salvo formularios con cambios (pedir confirmación); devolver el foco al disparador; nunca abrir un modal al cargar una página.
+
+### 16.4 Pestañas (`Tabs`)
+- Base: `ui/tabs`. Uso: alternar vistas de un mismo objeto (Resumen · Actividad · Documentos). Para secciones de un módulo usar la navegación contextual del sidebar, no tabs.
+- Estilo: subrayado, no "píldoras". Lista con borde inferior 1 px `--border`, gap 24 px; trigger 40 px alto, 12 px, `--muted-foreground`; activo `--foreground`, 500, línea inferior 2 px `--primary`; hover `--foreground`.
+- Contador opcional como `.section-count`. Máximo 6 pestañas; ≤640 px scroll horizontal sin scrollbar visible.
+- Si la pestaña cambia el contenido principal de la página, reflejarla en un parámetro de búsqueda de la URL.
+
+### 16.5 Formularios avanzados
+- Base: `ui/form`, `ui/label`, `ui/input`, `ui/textarea`, `ui/select`, `ui/checkbox`, `ui/radio-group`, `ui/switch`.
+- Diseño de `.form-grid` (2 columnas, gap 20 px); agrupar en secciones con `SectionHeading` y separadas por borde. Formularios largos (alta de empleado, factura): índice de secciones a la izquierda de 200 px fijo.
+- Obligatorios con `*` en `--danger` y `aria-required`; ayuda 11 px muted debajo del campo.
+- Error: borde `--danger`, mensaje 11 px `--danger` con `AlertCircle` 12 px, `aria-invalid` + `aria-describedby`; validar al salir del campo y al enviar, enfocando el primer error.
+- `Switch` solo para ajustes de efecto inmediato; `Checkbox` para opciones que se guardan con botón.
+- Botón de envío muestra `LoaderCircle` girando y queda deshabilitado mientras envía.
+
+### 16.6 Selectores, combobox y fechas
+- **Combobox/búsqueda en lista** (`ui/command` en `ui/popover`): para listas >10 opciones (clientes, empleados). Input 36 px, opciones 32 px, seleccionada con `Check` `--primary`.
+- **Multiselección:** valores como chips `badge-neutral` con `X` 12 px dentro del control.
+- **Date picker** (`ui/calendar` en popover): celdas 32 px, día actual con borde `--primary`, seleccionado fondo `--primary` texto `--primary-foreground`, rango con `--brand-soft`, fines de semana `--muted-foreground`. Semana inicia en lunes, locale `es`.
+
+### 16.7 KPIs y tarjetas de métricas (dashboards)
+- Patrón base: `.quote-metrics` (franja con divisores verticales), no tarjetas separadas con sombra.
+- Contenido: label 12 px muted → valor Manrope 27 px 700 tabular → variación 11 px con `TrendingUp`/`TrendingDown` en `--success`/`--danger` y periodo ("vs. mes anterior").
+- 3–4 KPIs por fila; ≤900 px 2 columnas; ≤640 px 1.
+
+### 16.8 Gráficas
+- Base: `ui/chart` (Recharts). Colores en orden: `--primary`, `--teal`, `--violet`, `--warning`, `--rose`; nunca más de 5 series. Semánticos solo cuando la serie significa estado.
+- Ejes y cuadrícula `--border`, etiquetas 10 px muted, sin fondo ni gradientes de área fuertes (relleno máx. 12 % de opacidad). Tooltip = popover estándar.
+- Contenedor con `SectionHeading` + selector de periodo a la derecha; alto 240–320 px; texto alternativo o tabla equivalente disponible.
+
+### 16.9 Monitoreo y estados en vivo
+- Indicador de estado: dot 8 px + texto (Operativo `--success`, Degradado `--warning`, Caído `--danger`, Sin datos `--muted-foreground`); nunca pulsos ni parpadeos.
+- "Actualizado hace 2 min" 11 px muted + botón ghost `RefreshCw` para refrescar manualmente; sin polling en el prototipo.
+- Tablas de incidentes en densidad compacta; severidad con `StatusBadge`.
+
+### 16.10 Calendario y agenda
+- Vistas Mes · Semana · Día como `Tabs` en la barra de herramientas, más "Hoy" (outline) y flechas `ChevronLeft/Right` ghost; título del periodo Manrope 16 px.
+- Cuadrícula con bordes 1 px `--border` sobre `--card`; día actual con número en círculo `--primary`; fuera de mes `--muted-foreground` sobre `--background`.
+- Eventos: bloque con fondo soft del tono y borde izquierdo 3 px del tono fuerte (reutilizar `tone-*`), texto 11 px; "+3 más" como enlace. Línea de hora actual 1 px `--danger` en vistas semana/día.
+- Detalle de evento en Popover; creación/edición en Sheet derecho.
+
+### 16.11 Nómina, ERP y CRM (patrones de dominio)
+- **Detalle de registro:** encabezado con identificador, `StatusBadge` y acciones; cuerpo con Tabs; lista de propiedades en `dl` de 2 columnas (label 11 px muted 160 px / valor 12 px), patrón ya usado en perfil.
+- **Totales:** filas de resumen alineadas a la derecha; total final 600, separado por borde superior doble no, simple 1 px `--foreground`.
+- **Procesos por pasos (Stepper)** para cierres de nómina o pedidos: pasos numerados en círculo 24 px (pendiente borde `--border`, actual `--primary`, completo `--success` con `Check`), conectores 1 px; acciones Atrás/Siguiente en footer.
+- **Pipeline/Kanban (CRM):** columnas 280 px en `--background`, título 12 px 600 + contador; tarjetas `--card` borde 1 px, padding 12 px, sin sombra; arrastrar con alternativa por teclado/menú "Mover a".
+- **Línea de tiempo/actividad:** reutilizar `RecentActivity`; dot 8 px por evento, fecha 10 px muted.
+
+### 16.12 Retroalimentación
+- **Toast** (`ui/sonner`, montar `<Toaster />` una vez en `__root.tsx`): abajo a la derecha, `--card` con borde y `--shadow-overlay`, ícono semántico; 4 s; incluir "Deshacer" tras eliminar. Solo confirma acciones, nunca reemplaza errores de formulario.
+- **Alert en línea** (`ui/alert`): bloque con fondo soft semántico, borde 1 px del tono fuerte al 30 %, ícono 16 px, título 12 px 600 + texto 12 px. Info usa `--brand-soft`/`--primary`.
+- **Banner de sistema** (mantenimiento, sesión por expirar): franja bajo el header, 40 px, `--warning-soft`, cerrable.
+- **Progreso** (`ui/progress`): 6 px alto, pista `--muted`, relleno `--primary` (o semántico), con porcentaje en texto.
+- **Tooltip** (`ui/tooltip`): fondo `--institutional`, texto `--institutional-fg`, 11 px, radio 4 px, retardo 300 ms; solo información complementaria, nunca contenido esencial.
+
+### 16.13 Otros
+- **Avatar** (`ui/avatar`): iniciales en `--brand-soft`/`--primary`, 24/32/40 px; grupos superpuestos con borde 2 px `--card`, "+N".
+- **Acordeón** (`ui/accordion`): filas con borde inferior, título 12 px 500, `ChevronDown` que rota; para FAQ y filtros avanzados.
+- **Paginación/carga:** paginación numérica en tablas; "Cargar más" outline en listas de actividad; no scroll infinito.
+- **Command palette** (`ui/command` en dialog): atajo `Ctrl/⌘ K`, extensión de la búsqueda global; resultados agrupados (Módulos, Registros, Acciones).
+
+### 16.14 Mapa de componentes futuros
+
+| Necesidad | Primitivo base | Wrapper Intercore propuesto |
+|---|---|---|
+| Tabla de datos | `ui/table` | `DataTable`, `TableToolbar`, `RowActions` |
+| Modal / confirmación | `ui/dialog`, `ui/alert-dialog` | `FormDialog`, `ConfirmDialog` |
+| Panel de detalle | `ui/sheet` | `RecordSheet` |
+| Pestañas | `ui/tabs` | `RecordTabs` |
+| KPIs | — | `MetricStrip` (extiende `.quote-metrics`) |
+| Gráficas | `ui/chart` | `ChartPanel` |
+| Fechas | `ui/calendar`, `ui/popover` | `DatePicker`, `CalendarView` |
+| Selección avanzada | `ui/command`, `ui/popover` | `Combobox` |
+| Pasos | — | `Stepper` |
+| Avisos | `ui/sonner`, `ui/alert` | `InlineAlert`, `SystemBanner` |
+
+Antes de crear cualquiera de estos, revisar si ya fue implementado en `widgets.tsx` y reutilizarlo.
