@@ -651,7 +651,7 @@ Estado: **Implementado** · extensión **Propuesto** (grupos colapsables por mó
 #### Propósito
 Navegación global y contextual persistente (ver sección 8).
 #### Variantes
-Expandido 244 px · Compacto 72 px (existe) · Drawer móvil 280 px (existe) · extensión **Propuesto**: grupo colapsable.
+Expandido 244 px · Compacto 72 px (Implementado) · Drawer móvil 280 px (Implementado) · extensión **Propuesto**: grupo colapsable.
 #### Estructura visual
 Grupo: label 9 px mayúsculas `--institutional-muted` + `ChevronDown` 12 px; hijos con sangría 12 px.
 #### Props sugeridas
@@ -674,13 +674,13 @@ Estado: **Implementado** · extensión **Propuesto** (acción contextual de pág
 #### Propósito
 Búsqueda global, pendientes, notificaciones y perfil (sección 8).
 #### Variantes
-Estándar (existe) · extensión **Propuesto**: con `SystemBanner` debajo.
+Estándar (Implementado) · extensión **Propuesto**: con `SystemBanner` debajo.
 #### Estructura visual
 72 px, `--card`, borde inferior; acciones a la derecha separadas por divisor 1 px.
 #### Props sugeridas
 Ninguna nueva; las pantallas no inyectan elementos en el header.
 #### Estados
-Punto `--danger` en notificaciones no leídas (existe).
+Punto `--danger` en notificaciones no leídas (Implementado).
 #### Responsive
 ≤900 px búsqueda se reduce (Implementado); ≤640 px botón ícono que abre Command palette (Pendiente de decisión).
 #### Accesibilidad
@@ -695,7 +695,7 @@ Estado: **Implementado** · extensión **Propuesto** (truncado y etiquetas perso
 #### Propósito
 Ubicación en vistas profundas, empieza en "Intercore". Implementado: `<Breadcrumbs />` sin props, lo renderiza `AppShell` automáticamente a partir de la URL; las pantallas no lo instancian.
 #### Variantes
-Estándar (existe) · extensión **Propuesto**: truncado con `…` cuando hay más de 4 niveles.
+Estándar (Implementado) · extensión **Propuesto**: truncado con `…` cuando hay más de 4 niveles.
 #### Estructura visual
 10 px muted, separador `ChevronRight` (12 px en el código); último nivel `--foreground` sin enlace.
 #### Props sugeridas
@@ -886,7 +886,7 @@ Elegir una opción de ≤10.
 #### Variantes
 Nativo (preferido) · Radix con íconos.
 #### Estructura visual
-Base de input + `ChevronDown` 14 px; filtros 35 px y 11 px (existe).
+Base de input + `ChevronDown` 14 px; filtros 35 px y 11 px (Implementado).
 #### Props sugeridas
 `options: { value, label, disabled? }[]`, `placeholder`.
 #### Estados
@@ -1160,7 +1160,7 @@ Estado: **Implementado** (parcial) (`.filter-toolbar` con selects en pendientes)
 #### Propósito
 Combinar condiciones sobre listados.
 #### Variantes
-Barra rápida (existe) · Panel de filtros (Sheet derecho 400 px) · chips de filtros activos.
+Barra rápida (Implementado) · Panel de filtros (Sheet derecho 400 px) · chips de filtros activos.
 #### Estructura visual
 Chips bajo la barra: `badge-neutral` "Prioridad: Alta ×" + enlace "Limpiar filtros"; panel con secciones Accordion.
 #### Props sugeridas
@@ -1324,7 +1324,7 @@ Estado: **Implementado** (`ModuleCard`) · extensión **Propuesto**: `RecordCard
 #### Propósito
 Representar un objeto individual.
 #### Variantes
-Módulo (existe) · Registro (kanban, resultados).
+Módulo (Implementado) · Registro (kanban, resultados).
 #### Estructura visual
 `--card`, borde 1 px, radio `--radius`, padding 16 px, sin sombra; hover borde `--ring` solo si es clicable.
 #### Props sugeridas
